@@ -1,0 +1,110 @@
+import { xrand, escapeHtml } from './pretty';
+import { Chance } from 'chance';
+import path from 'path';
+import cwd from 'cwd';
+
+// TODO: fallback if file doesn't exist
+const absChanceMixinPath = path.resolve(cwd(), 'chance.mixin.js');
+const chanceMixin = require(absChanceMixinPath);
+new Chance().mixin(chanceMixin);  // yes, this is weird. see https://github.com/chancejs/chancejs/issues/204
+
+function test_(testId, name, fn) {
+  const chance = new Chance(__SEED__ + testId);
+  const steps = new Steps();
+  test(`${testId} - ${name}`, async () => {
+    try {
+      await fn(steps, chance);
+    } catch (e) {
+      if (global.__DEBUG_SCREENSHOTS__ ?? false) {
+        if (page != null) {
+          await page.screenshot({ path: `${testId}.png`, fullPage: true });
+        }
+      }
+      let errorMessage = e.message;
+      throw Error(JSON.stringify({ steps: steps.list, errorMessage }))
+    }
+  });
+}
+
+class Steps {
+  constructor() { this.list = []; }
+  push(description, more = null) { this.list.push({ description, more }); }
+}
+
+async function gotoPage(steps, url, params = {}) {
+  let qs = [];
+  let ps = [];
+  for (let key in params) {
+    qs.push(`${key}=${params[key]}`);
+    ps.push(`${key}=${xrand(params[key])}`);
+  }
+  let q = qs.join('&');
+  let p = ps.join('&');
+  let c = qs.length == 0 ? '' : url.lastIndexOf('?') == -1 ? '?' : '&';
+  steps.push(`navigate to <code>${url + c + p}</code>`);
+  await page.goto(url + c + q, { waitUntil: 'networkidle0' });
+}
+
+async function reloadPage(steps) {
+  steps.push('reload the page');
+  await page.reload({ waitUntil: 'networkidle0' });
+}
+
+async function clickElement(steps, selector, { selectorStr = null, withText = null, textStr = null, waitForNavigation = false } = {}) {
+  selectorStr = stringify(selector, selectorStr);
+  textStr = withText ? ` with text matching <code>${stringify(withText, textStr)}</code>` : '';
+  const waitStr = waitForNavigation ? ' and wait for navigation' : '';
+  steps.push(`click <code>${selectorStr}</code>${textStr}${waitStr}`);
+  if (waitForNavigation) {
+    await Promise.all([
+      expect(page).toClick(selector, { text: withText }),
+      page.waitForNavigation({ waitUntil: 'networkidle0' })
+    ]);
+  } else {
+    await expect(page).toClick(selector, { text: withText })
+  }
+}
+
+async function fillElement(steps, selector, value, { selectorStr = null, valueStr = null } = {}) {
+  selectorStr = stringify(selector, selectorStr)
+  valueStr = stringify(value, valueStr);
+  steps.push(`type <code>${valueStr}</code> into <code>${selectorStr}</code>`);
+  await expect(page).toFill(selector, value.toString());
+}
+
+async function selectOption(steps, selector, option, { selectorStr = null, optionStr = null } = {}) {
+  selectorStr = stringify(selector, selectorStr);
+  optionStr = stringify(option, optionStr);
+  steps.push(`select the <code>${optionStr}</code> option of <code>${selectorStr}</code>`);
+  await expect(page).toSelect(selector, option);
+}
+
+async function expectElementProperty(steps, selector, property, value, { selectorStr = null, propertyStr = null, valueStr = null } = {}) {
+  selectorStr = stringify(selector, selectorStr);
+  propertyStr = stringify(property, propertyStr);
+  valueStr = stringify(value, valueStr);
+  steps.push(`expect <code>${propertyStr}</code> of <code>${selectorStr}</code> to be <code>${valueStr}</code>`);
+  const elem = await expect(page).toMatchElement(selector);
+  const actualValue = await page.evaluate((el, prop) => el[prop], elem, property);
+  expect(actualValue).toEqual(value.toString());
+}
+
+function stringify(x,f) {
+  if (typeof f === 'string') {
+    return f;
+  } else if (typeof f === 'function') {
+    return f(x);
+  } else {
+    return escapeHtml(x.toString());
+  }
+}
+
+module.exports = {
+  test_,
+  gotoPage,
+  reloadPage,
+  clickElement,
+  fillElement,
+  selectOption,
+  expectElementProperty
+}

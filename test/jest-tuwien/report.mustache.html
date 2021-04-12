@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}} Test Report</title>
+  <style>
+     :root {
+      --sans: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+      --mono: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+    }
+
+    body {
+      font-family: var(--sans);
+      margin: 4rem;
+    }
+
+    pre {
+      font-family: var(--mono);
+      white-space: pre-wrap;
+    }
+
+    code {
+      font-family: var(--mono);
+    }
+
+    table {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: collapse;
+      border: 1px solid black;
+    }
+
+    td {
+      border-top: 1px solid black;
+      padding: 0.5em 0;
+    }
+
+    tr.test {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .passed {
+      background-color: lightgreen;
+    }
+
+    .passed>td:first-child::before {
+      content: '✓';
+      display: inline-block;
+      width: 1.75em;
+      text-align: center;
+    }
+
+    .failed {
+      background-color: lightcoral;
+    }
+
+    .failed>td:first-child::before {
+      content: '✘';
+      display: inline-block;
+      width: 1.75em;
+      text-align: center;
+    }
+
+    .pending {
+      background-color: gainsboro;
+    }
+
+    .pending>td:first-child::before {
+      content: '?';
+      display: inline-block;
+      width: 1.75em;
+      text-align: center;
+    }    
+
+    .error>td {
+      padding: 1em;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+    }
+
+    .points {
+      text-align: right;
+      padding-right: 1em;
+      font-weight: bold;
+      font-variant-numeric: tabular-nums;
+    }
+
+    ul {
+      padding: 0;
+      list-style: disc inside;
+    }
+
+    ul.steps {
+      list-style: none;
+      padding-left: 1em;
+      margin: 0.5em 0;
+    }
+
+    ul.steps > li {
+      padding-bottom: 0.5em;
+    }
+
+    ul.steps > li:last-child {
+      padding-bottom: 0;
+    }
+
+    ul.steps > li::before {
+      content: '☑ ';
+    }
+
+    ul.steps > li:last-child {
+      color: red;
+    }
+
+    ul.steps > li:last-child::before {
+      content: '☒ ';
+    }
+
+    x-rand {
+      background-color: lightgoldenrodyellow;
+    }
+
+    .toggle {
+      color: blue;
+      font-size: small;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      margin-left: 0.5em;
+    }
+
+    .more {
+      margin: 0.5em 1.5em;
+      color: black;
+      font-size: small;
+    }
+  </style>
+  <script>
+    function toggle(e) {
+      const x = e.nextElementSibling;
+      if (x.style.display == 'none') {
+        x.style.display = 'block';
+        e.innerText = 'less info';
+      } else {
+        x.style.display = 'none';
+        e.innerText = 'more info';
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>{{title}} Test Report<span style="float: right;">{{totalPoints}} points {{partyFace}}</span></h1>
+  {{startTime}}<br>
+  {{numTotalTests}} tests &mdash; {{numPassedTests}} passed / {{numFailedTests}} failed<br>
+  <br>
+  {{maxPoints}} points<br>
+  &minus;{{minusPoints}} points for failed tests<br>
+  = {{totalPoints}} points total<br>
+  <br>
+  Seed: <code>{{seed}}</code><br>
+  <small>(used to generate <x-rand>random input values</x-rand>)</small><br>
+
+  {{#sections}}
+  <h2>{{testName}}</h2>
+  
+  {{#testExecError}}
+  <table>
+    <tr class="test failed">
+      <td>Test execution error</td>
+      <td class="points">&minus;{{minusPoints}}</td>
+    </tr>
+    <tr class="error">
+      <td colspan=2>{{errorMessage}}</td>
+    </tr>
+  </table>
+  {{/testExecError}}
+
+  <table>
+    {{#tests}}
+    <tr class="test {{status}}">
+      <td>{{testId}} &mdash; {{title}}</td>
+      <td class="points">{{#minusPoints}}&minus;{{.}}{{/minusPoints}}</td>
+    </tr>
+
+    {{#steps.length}}
+    <tr>
+      <td colspan=2>
+        <ul class="steps">
+          {{#steps}}
+          <li>
+            {{{description}}}
+            {{#more}}
+            <span class="toggle" onclick="toggle(this);">more info</span>
+            <div class="more" style="display: none">{{{.}}}</div>
+            {{/more}}
+          </li>
+          {{/steps}}
+        </ul>
+      </td>
+    </tr>
+    {{/steps.length}}
+
+    {{#errorMessage}}
+    <tr class="error">
+      <td colspan=2>{{.}}</td>
+    </tr>
+    {{/errorMessage}}
+
+    {{/tests}}
+  </table>
+  {{/sections}}
+</body>
+
+</html>
