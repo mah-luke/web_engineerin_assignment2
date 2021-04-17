@@ -16,17 +16,25 @@ TODO: Reaplace 'search our collection of...' with actual search term 'Searching 
         watch out for plural (artwork vs artworks)
 */
 
+
 const form = document.querySelector('form.search-form');
 
 form.addEventListener('submit', event => { 
+    console.log("--- Search started ---");
+    
     event.preventDefault();
+    loadSearch(document.getElementById('search'));
+});
 
-    console.log("Search pressed");
-    const searchInput = document.getElementById('search');
+function loadSearch(searchInput) {
+    console.log(`loadSearch(${searchInput.value})`);
+
+    gallery = document.getElementById('gallery');
+    gallery.innerHTML = "";
 
     // load only highlights
     if(!searchInput.value) {
-        console.log("No search value given. Loading the highlights");
+        console.log("No search value given. Loading the highlights.");
         searchInput.style.border = '1px solid red';
         loadHighlights();
     }
@@ -34,17 +42,29 @@ form.addEventListener('submit', event => {
     else {
         console.log(`Searching by value = ${searchInput.value}`);
     } 
-});
+}
 
-function loadHighlights() {
+async function loadHighlights() {
     console.log(`loadHighlights()`);
 
     const gallery = document.getElementById('gallery');
-    const thumb = new Thumb("testTitle", "testArtist", "2021-05-21", "www.test.com", "test alt");
-    const thumbDiv = createThumbElement(thumb);
+    await fetch("./highlights.json") // fetch highlights data
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+            hlJson = json});
 
-    console.log(thumbDiv);
-    gallery.appendChild(thumbDiv);
+    for(let highlight of hlJson.highlights){
+        console.log(highlight);
+
+        //TODO: add API call to fill divs with correct information
+        const thumbDiv = createThumbElement(
+            new Thumb(highlight)
+        );
+
+        gallery.appendChild(thumbDiv);
+
+    }
 };
 
 function createThumbElement(thumb) {
