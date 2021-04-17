@@ -40,22 +40,37 @@ form.addEventListener('submit', event => {
 });
 
 function loadHighlights() {
-    console.log("loadHighlights()");
-    
+    console.log("loadHighlights()");    
 };
 
+class Thumb {
+    constructor(title, artist, date, href, url, alt) {
+        this.title = title;
+        this.artist = artist;
+        this.date = date;
+        this.href = href;
+        this.url = url;
+        this.alt = alt;
+    }
+}
+
 function createThumbElement(thumb) {
+    console.log(`Creating thumb element: ${thumb}`)
+
     const div = document.createElementlement('div');
     div.classList.add("thumb");
 
+    // TODO: set correct link for href to framing.html
     div.innerHTML = 
-        `<a href="framing.html">
-        <img src="" alt="">
+        `<a href="framing.html/${thumb.href}">
+        <img src="${thumb.url}" alt="${thumb.alt}">
         <div class="museum-label">
-            <span class="artist"></span>
-            <span class="title"></span>
-            <span class="date"></span>
+            <span class="artist">${thumb.artist}</span>
+            <span class="title">${thumb.title}</span>
+            <span class="date">${thumb.date}</span>
         </div>
         </a>`;
+
+    return div;
 }
 
