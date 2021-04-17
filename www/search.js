@@ -16,7 +16,9 @@ TODO: Reaplace 'search our collection of...' with actual search term 'Searching 
         watch out for plural (artwork vs artworks)
 */
 
-const form = document.querySelector('form.search-form')
+import { artwork } from "./artwork";
+
+const form = document.querySelector('form.search-form');
 
 
 form.addEventListener('submit', event => { 
@@ -24,8 +26,36 @@ form.addEventListener('submit', event => {
 
     console.log("Search pressed");
     const searchInput = document.getElementById('search');
+
+    // load only highlights
     if(!searchInput.value) {
+        console.log("No search value given. Loading the highlights");
         searchInput.style.border = '1px solid red';
+        loadHighlights();
     }
-    console.log(`Searching by value = ${searchInput.value}`);
-})
+    // load search results
+    else {
+        console.log(`Searching by value = ${searchInput.value}`);
+    } 
+});
+
+function loadHighlights() {
+    console.log("loadHighlights()");
+    
+};
+
+function createThumbElement(thumb) {
+    const div = document.createElementlement('div');
+    div.classList.add("thumb");
+
+    div.innerHTML = 
+        `<a href="framing.html">
+        <img src="" alt="">
+        <div class="museum-label">
+            <span class="artist"></span>
+            <span class="title"></span>
+            <span class="date"></span>
+        </div>
+        </a>`;
+}
+
