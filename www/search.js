@@ -19,29 +19,33 @@ TODO: Reaplace 'search our collection of...' with actual search term 'Searching 
 
 const form = document.querySelector('form.search-form');
 
+// events
+
 form.addEventListener('submit', event => { 
     console.log("--- Search started ---");
     
     event.preventDefault();
-    loadSearch(document.getElementById('search'));
+    startSearch(document.getElementById('search'));
 });
 
-function loadSearch(searchInput) {
+// functions
+
+function startSearch(searchInput) {
     console.log(`loadSearch(${searchInput.value})`);
 
-    gallery = document.getElementById('gallery');
-    gallery.innerHTML = "";
+    // clear old search
+    gallery = document.getElementById('gallery').innerHTML = "";
 
-    // load only highlights
+    // load highlights (empty search)
     if(!searchInput.value) {
         console.log("No search value given. Loading the highlights.");
-        searchInput.style.border = '1px solid red';
+        searchInput.style.border = '1px solid red'; //TODO: probably remove line
         loadHighlights();
     }
     // load search results
     else {
         console.log(`Searching by value = ${searchInput.value}`);
-        
+        loadSearch();
     } 
 }
 
@@ -52,11 +56,12 @@ async function loadHighlights() {
     await fetch("./highlights.json") // fetch highlights data
         .then(response => response.json())
         .then(json => {
-            console.log(json);
-            hlJson = json});
+            console.debug(json);
+            hlJson = json}
+        );
 
     for(let highlight of hlJson.highlights){
-        console.log(highlight);
+        console.debug(highlight);
 
         //TODO: add API call to fill divs with correct information
         const thumbDiv = createThumbElement(
@@ -64,12 +69,17 @@ async function loadHighlights() {
         );
 
         gallery.appendChild(thumbDiv);
-
     }
 };
 
+async function loadSearch() {
+    console.log(`loadSearch()`);
+
+
+}
+
 function createThumbElement(thumb) {
-    console.log(`Creating thumb element: ${JSON.stringify(thumb)}`)
+    console.log(`createThumbElement(${JSON.stringify(thumb)})`)
     
     const div = document.createElement('div');
     div.classList.add("thumb");
