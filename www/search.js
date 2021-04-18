@@ -60,12 +60,19 @@ async function loadHighlights() {
             hlJson = json}
         );
 
-    for(let highlight of hlJson.highlights){
-        console.debug(highlight);
+    for(let highlightId of hlJson.highlights){
+        console.debug(highlightId);
 
-        //TODO: add API call to fill divs with correct information
+        const highlight = await getArtworkObject(highlightId);
         const thumbDiv = createThumbElement(
-            new Thumb(highlight)
+            new Thumb(
+                highlight.title,
+                highlight.artistDisplayName,
+                highlight.objectDate,
+                null,
+                highlight.primaryImage,
+                `Picture: ${highlight.title}`
+            )
         );
 
         gallery.appendChild(thumbDiv);
@@ -78,6 +85,19 @@ async function loadSearch() {
 
 }
 
+const getArtworkObject = async(highlightId) => {
+    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
+        method: 'GET',
+        // body: myBody,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const highlight = await response.json();
+    console.log(highlight);
+    return highlight;
+}
+
 function createThumbElement(thumb) {
     console.log(`createThumbElement(${JSON.stringify(thumb)})`)
     
@@ -87,10 +107,10 @@ function createThumbElement(thumb) {
     // TODO: set correct link for href to framing.html
     div.innerHTML = 
     `<a href="framing.html/${thumb.href}">
-    <img src="${thumb.url}" alt="${thumb.alt}">
+    <img src="${thumb.imgUrl}" alt="${thumb.alt}">
     <div class="museum-label">
     <span class="artist">${thumb.artist}</span>
-    <span class="title">${thumb.title}</span>
+    <span class="title">${thumb.title}</span>,
     <span class="date">${thumb.date}</span>
     </div>
     </a>`;
