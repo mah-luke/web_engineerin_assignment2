@@ -1,17 +1,17 @@
 /*
-TODO: use query parameter q to store search term
+TODO: use query parameter q to store search term /done
 
-TODO: Use MET API to search
+TODO: Use MET API to search /done
 
 TODO: load highlights if no searchterm was given (highlights.json) /done?
 
 TODO: Consider only artworks that have images
 
-TODO: Return only the first 100 per search
+TODO: Return only the first 100 per search /done
 
-TODO: Link the artwork image of each result to the corresponding Framing page
+TODO: Link the artwork image of each result to the corresponding Framing page /done?
 
-TODO: Reaplace 'search our collection of...' with actual search term 'Searching for "<term>"'
+TODO: Replace 'search our collection of...' with actual search term 'Searching for "<term>"'
         when the search is done: 'Found <number> artworks for "<term>"'
         watch out for plural (artwork vs artworks)
 */
@@ -96,7 +96,7 @@ async function getArtworkObject(highlightId){
 }
 
 async function getArtworkSearch(searchParam){
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers`, {
+    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}`, {
         method: 'GET',
         // body: myBody,
         headers: {
@@ -105,7 +105,7 @@ async function getArtworkSearch(searchParam){
     });
     const result = await response.json();
     console.log(result);
-    return result.objectIDs;
+    return result.objectIDs.slice(0,100);
 }
 
 function createThumbElement(thumb) {
