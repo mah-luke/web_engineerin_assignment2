@@ -5,7 +5,7 @@ TODO: Use MET API to search /done
 
 TODO: load highlights if no searchterm was given (highlights.json) /done?
 
-TODO: Consider only artworks that have images
+TODO: Consider only artworks that have images /done
 
 TODO: Return only the first 100 per search /done
 
@@ -36,9 +36,14 @@ async function search(searchInput) {
     if(!loading) {
         loading = true;
         var gallery = document.getElementById('gallery');
+        var searchInfo = document.getElementById('search-info');
         gallery.innerHTML = ""; // clear old search
+        searchInfo.innerHTML = `Searching for "${searchInput}"`;
 
         let artworkIds;
+
+
+
         // load highlights (empty search)
         if(!searchInput) {
             console.log("No search value given. Loading the highlights.");
@@ -47,13 +52,15 @@ async function search(searchInput) {
         // load search results
         else {
             console.log(`Searching by value: '${searchInput}'`);
-            artworkIds = await getArtworkSearch(searchInput);
+            artworkIds = await getArtworkSearch(searchInput, true);
         }
 
         console.debug(artworkIds);
-
+        
         // create divs from artworkIds
         if(artworkIds){
+            searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
+            artworkIds = artworkIds.slice(0,100); 
             for(let artworkId of artworkIds){
                 console.debug(artworkId);
 
@@ -73,12 +80,15 @@ async function search(searchInput) {
         }
         else {
             //TODO: errorcode no image found
+            searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
         }
 
         loading = false;
         console.warn(loading);
     } else {
         console.warn(`Search for parameter '${searchInput}' aborted because old search is still running!`);
+
+        //TODO: errorcode old search still running
     }
 }
 
@@ -129,8 +139,8 @@ async function getArtworkObject(highlightId){
     return highlight;
 }
 
-async function getArtworkSearch(searchParam){
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}`, {
+async function getArtworkSearch(searchParam, hasImages){
+    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}&hasImages=${hasImages}`, {
         method: 'GET',
         // body: myBody,
         headers: {
@@ -138,8 +148,10 @@ async function getArtworkSearch(searchParam){
         }
     });
     const result = await response.json();
+
     console.log(result);
-    return result.total > 0? result.objectIDs.slice(0,100): null;
+
+    return result.total > 0? result.objectIDs: null;
 }
 
 // Container to contain parameters for creating a Thumb
