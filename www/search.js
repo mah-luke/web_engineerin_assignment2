@@ -66,22 +66,25 @@ async function search(searchInput) {
             for(let artworkId of artworkIds){
                 console.debug(artworkId);
 
-                const artwork = await getArtworkObject(artworkId);
-                const thumbDiv = createThumbElement(
-                    new Thumb(
-                        artwork.objectID,
-                        artwork.title,
-                        artwork.artistDisplayName,
-                        artwork.objectDate,
-                        artwork.primaryImage,
-                        `Picture: ${artwork.title}`
+                const artwork = getArtworkObject(artworkId)
+                .then(artwork => {
+                    gallery.appendChild(
+                        createThumbElement(
+                            new Thumb(
+                                artwork.objectID,
+                                artwork.title,
+                                artwork.artistDisplayName,
+                                artwork.objectDate,
+                                artwork.primaryImage,
+                                `Picture: ${artwork.title}`
+                            )
+                        )
                     )
-                );
-                gallery.appendChild(thumbDiv);
+                });
             }
         }
         else {
-            //TODO: errorcode no image found
+
             searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
         }
 
@@ -129,6 +132,7 @@ function createThumbElement(thumb) {
 
 // API calls
 async function getArtworkObject(highlightId){
+    console.warn(highlightId);
     const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
         method: 'GET',
         // body: myBody,
@@ -142,6 +146,7 @@ async function getArtworkObject(highlightId){
 }
 
 async function getArtworkSearch(searchParam, hasImages){
+    console.warn(searchParam);
     const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}&hasImages=${hasImages}`, {
         method: 'GET',
         // body: myBody,
