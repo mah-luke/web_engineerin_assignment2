@@ -41,6 +41,7 @@ function loadSearch(searchInput) {
     // load search results
     else {
         console.log(`Searching by value = ${searchInput.value}`);
+        
     } 
 }
 
