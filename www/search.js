@@ -23,6 +23,12 @@ const form = document.querySelector('form.search-form');
 
 // events
 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("--- load site ---");
+
+    search();
+});
+
 form.addEventListener('submit', event => {
     console.log("--- Search triggered ---");
 
@@ -44,12 +50,10 @@ async function search(searchInput) {
 
         let artworkIds;
 
-
-
         // load highlights (empty search)
         if(!searchInput) {
             console.log("No search value given. Loading the highlights.");
-            artworkIds = await loadHighlights();
+            artworkIds = await getHighlights();
         }
         // load search results
         else {
@@ -97,7 +101,7 @@ async function search(searchInput) {
     }
 }
 
-async function loadHighlights() {
+async function getHighlights() {
     console.log(`loadHighlights()`);
 
     await fetch("./highlights.json") // fetch highlights data
