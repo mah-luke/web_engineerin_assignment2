@@ -3,7 +3,7 @@ TODO: use query parameter q to store search term
 
 TODO: Use MET API to search
 
-TODO: load highlights if no searchterm was given (highlights.json)
+TODO: load highlights if no searchterm was given (highlights.json) /done?
 
 TODO: Consider only artworks that have images
 
@@ -30,62 +30,59 @@ form.addEventListener('submit', event => {
 
 // functions
 
-function startSearch(searchInput) {
+async function startSearch(searchInput) {
     console.log(`loadSearch(${searchInput.value})`);
 
-    // clear old search
-    gallery = document.getElementById('gallery').innerHTML = "";
+    var gallery = document.getElementById('gallery');
+    gallery.innerHTML = ""; // clear old search
 
+    let artworkIds;
     // load highlights (empty search)
     if(!searchInput.value) {
         console.log("No search value given. Loading the highlights.");
         searchInput.style.border = '1px solid red'; //TODO: probably remove line
-        loadHighlights();
+        artworkIds = await loadHighlights();
     }
     // load search results
     else {
-        console.log(`Searching by value = ${searchInput.value}`);
-        loadSearch();
-    } 
+        console.log(`Searching by value: '${searchInput.value}'`);
+        artworkIds = await getArtworkSearch(searchInput.value);
+    }
+
+    console.debug(artworkIds);
+
+    // create divs from artworkIds
+    for(let artworkId of artworkIds){
+        console.debug(artworkId);
+
+        const artwork = await getArtworkObject(artworkId);
+        const thumbDiv = createThumbElement(
+            new Thumb(
+                artwork.title,
+                artwork.artistDisplayName,
+                artwork.objectDate,
+                null,
+                artwork.primaryImage,
+                `Picture: ${artwork.title}`
+            )
+        );
+        gallery.appendChild(thumbDiv);
+    }
 }
 
 async function loadHighlights() {
     console.log(`loadHighlights()`);
 
-    const gallery = document.getElementById('gallery');
     await fetch("./highlights.json") // fetch highlights data
         .then(response => response.json())
         .then(json => {
             console.debug(json);
             hlJson = json}
         );
-
-    for(let highlightId of hlJson.highlights){
-        console.debug(highlightId);
-
-        const highlight = await getArtworkObject(highlightId);
-        const thumbDiv = createThumbElement(
-            new Thumb(
-                highlight.title,
-                highlight.artistDisplayName,
-                highlight.objectDate,
-                null,
-                highlight.primaryImage,
-                `Picture: ${highlight.title}`
-            )
-        );
-
-        gallery.appendChild(thumbDiv);
-    }
+    return hlJson.highlights;
 };
 
-async function loadSearch() {
-    console.log(`loadSearch()`);
-
-
-}
-
-const getArtworkObject = async(highlightId) => {
+async function getArtworkObject(highlightId){
     const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
         method: 'GET',
         // body: myBody,
@@ -93,9 +90,22 @@ const getArtworkObject = async(highlightId) => {
             'Content-Type': 'application/json'
         }
     });
-    const highlight = await response.json();
+    const highlight = response.json();
     console.log(highlight);
     return highlight;
+}
+
+async function getArtworkSearch(searchParam){
+    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers`, {
+        method: 'GET',
+        // body: myBody,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const result = await response.json();
+    console.log(result);
+    return result.objectIDs;
 }
 
 function createThumbElement(thumb) {
