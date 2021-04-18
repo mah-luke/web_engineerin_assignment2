@@ -16,57 +16,69 @@ TODO: Replace 'search our collection of...' with actual search term 'Searching f
         watch out for plural (artwork vs artworks)
 */
 
-
+let loading = false;
 const form = document.querySelector('form.search-form');
 
 // events
 
-form.addEventListener('submit', event => { 
-    console.log("--- Search started ---");
-    
+form.addEventListener('submit', event => {
+    console.log("--- Search triggered ---");
+
     event.preventDefault();
-    startSearch(document.getElementById('search'));
+    search(document.getElementById('search').value);
 });
 
 // functions
 
-async function startSearch(searchInput) {
-    console.log(`loadSearch(${searchInput.value})`);
+async function search(searchInput) {
+    console.log(`search(${searchInput})`);
 
-    var gallery = document.getElementById('gallery');
-    gallery.innerHTML = ""; // clear old search
+    if(!loading) {
+        loading = true;
+        var gallery = document.getElementById('gallery');
+        gallery.innerHTML = ""; // clear old search
 
-    let artworkIds;
-    // load highlights (empty search)
-    if(!searchInput.value) {
-        console.log("No search value given. Loading the highlights.");
-        searchInput.style.border = '1px solid red'; //TODO: probably remove line
-        artworkIds = await loadHighlights();
-    }
-    // load search results
-    else {
-        console.log(`Searching by value: '${searchInput.value}'`);
-        artworkIds = await getArtworkSearch(searchInput.value);
-    }
+        let artworkIds;
+        // load highlights (empty search)
+        if(!searchInput) {
+            console.log("No search value given. Loading the highlights.");
+            artworkIds = await loadHighlights();
+        }
+        // load search results
+        else {
+            console.log(`Searching by value: '${searchInput}'`);
+            artworkIds = await getArtworkSearch(searchInput);
+        }
 
-    console.debug(artworkIds);
+        console.debug(artworkIds);
 
-    // create divs from artworkIds
-    for(let artworkId of artworkIds){
-        console.debug(artworkId);
+        // create divs from artworkIds
+        if(artworkIds){
+            for(let artworkId of artworkIds){
+                console.debug(artworkId);
 
-        const artwork = await getArtworkObject(artworkId);
-        const thumbDiv = createThumbElement(
-            new Thumb(
-                artwork.objectID,
-                artwork.title,
-                artwork.artistDisplayName,
-                artwork.objectDate,
-                artwork.primaryImage,
-                `Picture: ${artwork.title}`
-            )
-        );
-        gallery.appendChild(thumbDiv);
+                const artwork = await getArtworkObject(artworkId);
+                const thumbDiv = createThumbElement(
+                    new Thumb(
+                        artwork.objectID,
+                        artwork.title,
+                        artwork.artistDisplayName,
+                        artwork.objectDate,
+                        artwork.primaryImage,
+                        `Picture: ${artwork.title}`
+                    )
+                );
+                gallery.appendChild(thumbDiv);
+            }
+        }
+        else {
+            //TODO: errorcode no image found
+        }
+
+        loading = false;
+        console.warn(loading);
+    } else {
+        console.warn(`Search for parameter '${searchInput}' aborted because old search is still running!`);
     }
 }
 
@@ -82,6 +94,28 @@ async function loadHighlights() {
     return hlJson.highlights;
 };
 
+
+function createThumbElement(thumb) {
+    console.log(`createThumbElement(${JSON.stringify(thumb)})`)
+    
+    const div = document.createElement('div');
+    div.classList.add("thumb");
+    
+    // TODO: set correct link for href to framing.html
+    div.innerHTML = 
+    `<a href="framing.html/${thumb.id}">
+    <img src="${thumb.imgUrl}" alt="${thumb.alt}">
+    <div class="museum-label">
+    <span class="artist">${thumb.artist}</span>
+    <span class="title">${thumb.title}</span>,
+    <span class="date">${thumb.date}</span>
+    </div>
+    </a>`;
+    
+    return div;
+}
+
+// API calls
 async function getArtworkObject(highlightId){
     const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
         method: 'GET',
@@ -105,27 +139,7 @@ async function getArtworkSearch(searchParam){
     });
     const result = await response.json();
     console.log(result);
-    return result.objectIDs.slice(0,100);
-}
-
-function createThumbElement(thumb) {
-    console.log(`createThumbElement(${JSON.stringify(thumb)})`)
-    
-    const div = document.createElement('div');
-    div.classList.add("thumb");
-    
-    // TODO: set correct link for href to framing.html
-    div.innerHTML = 
-    `<a href="framing.html/${thumb.id}">
-    <img src="${thumb.imgUrl}" alt="${thumb.alt}">
-    <div class="museum-label">
-    <span class="artist">${thumb.artist}</span>
-    <span class="title">${thumb.title}</span>,
-    <span class="date">${thumb.date}</span>
-    </div>
-    </a>`;
-    
-    return div;
+    return result.total > 0? result.objectIDs.slice(0,100): null;
 }
 
 // Container to contain parameters for creating a Thumb
