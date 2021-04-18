@@ -58,10 +58,10 @@ async function startSearch(searchInput) {
         const artwork = await getArtworkObject(artworkId);
         const thumbDiv = createThumbElement(
             new Thumb(
+                artwork.objectID,
                 artwork.title,
                 artwork.artistDisplayName,
                 artwork.objectDate,
-                null,
                 artwork.primaryImage,
                 `Picture: ${artwork.title}`
             )
@@ -116,7 +116,7 @@ function createThumbElement(thumb) {
     
     // TODO: set correct link for href to framing.html
     div.innerHTML = 
-    `<a href="framing.html/${thumb.href}">
+    `<a href="framing.html/${thumb.id}">
     <img src="${thumb.imgUrl}" alt="${thumb.alt}">
     <div class="museum-label">
     <span class="artist">${thumb.artist}</span>
@@ -130,11 +130,11 @@ function createThumbElement(thumb) {
 
 // Container to contain parameters for creating a Thumb
 class Thumb {
-    constructor(title, artist, date, href, imgUrl, alt) {
+    constructor(id, title, artist, date, imgUrl, alt) {
+        this.id = id;
         this.title = title;
         this.artist = artist;
         this.date = date;
-        this.href = href;
         this.imgUrl = imgUrl;
         this.alt = alt;
     }
