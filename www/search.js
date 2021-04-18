@@ -12,9 +12,11 @@ TODO: Return only the first 100 per search /done
 TODO: Link the artwork image of each result to the corresponding Framing page /done?
 
 TODO: Replace 'search our collection of...' with actual search term 'Searching for "<term>"'
-        when the search is done: 'Found <number> artworks for "<term>"'
-        watch out for plural (artwork vs artworks)
+when the search is done: 'Found <number> artworks for "<term>"'
+watch out for plural (artwork vs artworks)
 */
+
+// import { getArtwork} from './met-api-wrapper.js';
 
 let loading = false;
 const form = document.querySelector('form.search-form');
