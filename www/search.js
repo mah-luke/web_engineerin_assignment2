@@ -26,76 +26,81 @@ const form = document.querySelector('form.search-form');
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
 
-    search();
+    searchHandler();
 });
 
 form.addEventListener('submit', event => {
     console.log("--- Search triggered ---");
 
     event.preventDefault();
-    search(document.getElementById('search').value);
+    searchHandler(document.getElementById('search').value);
 });
 
 // functions
 
+async function searchHandler(searchInput) {
+    if(!loading){
+        loading = true;
+        console.error(`setting loading to true for search ${searchInput}`);
+        search(searchInput).then(() => {
+            console.error(`setting loading to false for search ${searchInput}`);
+            loading = false;
+        });
+
+    } else {
+        console.error(`Aborting search, old search is still running!`);
+    }
+}
+
 async function search(searchInput) {
     console.log(`search(${searchInput})`);
 
-    if(!loading) {
-        loading = true;
-        var gallery = document.getElementById('gallery');
-        var searchInfo = document.getElementById('search-info');
-        gallery.innerHTML = ""; // clear old search
-        let artworkIds;
+    var gallery = document.getElementById('gallery');
+    var searchInfo = document.getElementById('search-info');
+    gallery.innerHTML = ""; // clear old search
+    let artworkIds;
 
-        // load highlights (empty search)
-        if(!searchInput) {
-            console.log("No search value given. Loading the highlights.");
-            artworkIds = await getHighlights();
-        }
-        // load search results
-        else {
-            console.log(`Searching by value: '${searchInput}'`);
-            searchInfo.innerHTML = `Searching for "${searchInput}"`;
-            artworkIds = await getArtworkSearch(searchInput, true);
-        }
+    // load highlights (empty search)
+    if(!searchInput) {
+        console.log("No search value given. Loading the highlights.");
+        searchInfo.innerHTML = `Search our collection of more than 400,000 artworks.`;
+        artworkIds = await getHighlights();
+    }
+    // load search results
+    else {
+        console.log(`Searching by value: '${searchInput}'`);
+        searchInfo.innerHTML = `Searching for "${searchInput}"`;
+        artworkIds = await getArtworkSearch(searchInput, true);
+    }
 
-        console.debug(artworkIds);
-        
-        // create divs from artworkIds
-        if(artworkIds){
-            if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
-            artworkIds = artworkIds.slice(0,100); 
-            for(let artworkId of artworkIds){
-                console.debug(artworkId);
+    console.debug(artworkIds);
+    
+    // create divs from artworkIds
+    if(artworkIds){
+        if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
+        artworkIds = artworkIds.slice(0,100); // max cap
+        for(let artworkId of artworkIds){
+            console.debug(artworkId);
 
-                const artwork = getArtworkObject(artworkId)
-                .then(artwork => {
-                    gallery.appendChild(
-                        createThumbElement(
-                            new Thumb(
-                                artwork.objectID,
-                                artwork.title,
-                                artwork.artistDisplayName,
-                                artwork.objectDate,
-                                artwork.primaryImage,
-                                `Picture: ${artwork.title}`
-                            )
+            const artwork = getArtworkObject(artworkId)
+            .then(artwork => {
+                gallery.appendChild(
+                    createThumbElement(
+                        new Thumb(
+                            artwork.objectID,
+                            artwork.title,
+                            artwork.artistDisplayName,
+                            artwork.objectDate,
+                            artwork.primaryImageSmall,
+                            `Picture: ${artwork.title}`
                         )
                     )
-                });
-            }
+                )
+            });
         }
-        else {
-            searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
-        }
-
-        loading = false;
-        console.warn(loading);
-    } else {
-        console.warn(`Search for parameter '${searchInput}' aborted because old search is still running!`);
-
-        //TODO: errorcode old search still running
+    }
+    else {
+        searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
     }
 }
 
