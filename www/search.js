@@ -16,8 +16,6 @@ when the search is done: 'Found <number> artworks for "<term>"'
 watch out for plural (artwork vs artworks)
 */
 
-// import { getArtwork} from './met-api-wrapper.js';
-
 const form = document.querySelector('form.search-form');
 const cart = document.querySelector('[href="cart.html"]');
 const CURRENT_URL = new URL(window.location.href);
@@ -27,11 +25,9 @@ const CURRENT_URL = new URL(window.location.href);
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     search(CURRENT_URL.searchParams.get('q'));
-    const cartStorage = localStorage.getItem('cart');
-    console.log(cartStorage);
+    const size = getSize('cart');
 
-    if(cartStorage == null || cartStorage == "[]") cart.innerHTML = 'Cart';
-    else cart.innerHTML = `Cart (${JSON.parse(cartStorage).length})`;
+    cart.innerHTML =  `Cart${size>0?` (${size})`:""}`;
 });
 
 form.addEventListener('submit', event => {
