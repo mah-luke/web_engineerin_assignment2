@@ -1,31 +1,35 @@
-const getArtwork = async function getArtworkObject(highlightId){
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
+/**
+ * return an ArtworkObject for the given Id
+ * 
+ * @param {*} id of the artwork. 
+ * @returns the object for the given id.
+ */
+function getArtworkObject(id){
+    return fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`, {
         method: 'GET',
         // body: myBody,
         headers: {
             'Content-Type': 'application/json'
         }
-    });
-    const highlight = response.json();
-    console.log(highlight);
-    return highlight;
+    })
+    .then( response => response = response.json());
 }
 
-// export default getArtwork;
-
-
-
-async function getArtworkSearch(searchParam, hasImages){
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}&hasImages=${hasImages}`, {
+/**
+ * return an array of all objectIds (of artworks) for the given search parameters.
+ * 
+ * @param {*} searchParam the string by which it is searched.
+ * @param {*} hasImages exclude artworks without images.
+ * @returns the array of all objectIds
+ */
+function getArtworkSearch(searchParam, hasImages){
+    return fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}&hasImages=${hasImages}`, {
         method: 'GET',
         // body: myBody,
         headers: {
             'Content-Type': 'application/json'
         }
-    });
-    const result = await response.json();
-
-    console.log(result);
-
-    return result.total > 0? result.objectIDs.slice(0,100): null;
+    })
+    .then( response => res = response.json())
+    .then( response => response = response.objectIDs);
 }

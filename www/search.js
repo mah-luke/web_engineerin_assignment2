@@ -18,7 +18,6 @@ watch out for plural (artwork vs artworks)
 
 // import { getArtwork} from './met-api-wrapper.js';
 
-let loading = false;
 const form = document.querySelector('form.search-form');
 const CURRENT_URL = new URL(window.location.href);
 
@@ -26,44 +25,17 @@ const CURRENT_URL = new URL(window.location.href);
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
-
-    console.error(CURRENT_URL);
-
-    searchProcesser();
+    search(CURRENT_URL.searchParams.get('q'));
 });
 
 form.addEventListener('submit', event => {
-    console.log("--- Search triggered ---");
+    console.debug("--- Search triggered ---");
 
     event.preventDefault();
     window.location.search = `?q=${document.getElementById('search').value}`;
-    // searchHandler(document.getElementById('search').value);
-});
-
-window.addEventListener('searchchange', event => {
-    console.error('search changed!!!');
 });
 
 // functions
-
-async function searchProcesser() {
-    if(!loading){
-        searchInput = CURRENT_URL.searchParams.get('q');
-        // .substring(3); // strip from '?q='
-
-        console.error(JSON.stringify(searchInput));
-        
-        loading = true;
-        console.error(`setting loading to true for search ${searchInput}`);
-        search(searchInput).then(() => {
-            console.error(`setting loading to false for search ${searchInput}`);
-            loading = false;
-        });
-
-    } else {
-        console.error(`Aborting search, old search is still running!`);
-    }
-}
 
 async function search(searchInput) {
     console.log(`search(${searchInput})`);
@@ -136,9 +108,8 @@ function createThumbElement(thumb) {
     const div = document.createElement('div');
     div.classList.add("thumb");
     
-    // TODO: set correct link for href to framing.html
     div.innerHTML = 
-    `<a href="framing.html/${thumb.id}">
+    `<a href="framing.html?objectID=${thumb.id}">
     <img src="${thumb.imgUrl}" alt="${thumb.alt}">
     <div class="museum-label">
     <span class="artist">${thumb.artist}</span>
@@ -150,38 +121,6 @@ function createThumbElement(thumb) {
     return div;
 }
 
-// API calls
-async function getArtworkObject(highlightId){
-    console.debug(highlightId);
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
-        method: 'GET',
-        // body: myBody,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const highlight = response.json();
-    console.log(highlight);
-    return highlight;
-}
-
-async function getArtworkSearch(searchParam, hasImages){
-    console.warn(searchParam);
-    const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchParam}&hasImages=${hasImages}`, {
-        method: 'GET',
-        // body: myBody,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const result = await response.json();
-
-    console.log(result);
-
-    return result.total > 0? result.objectIDs: null;
-}
-
-// Container to contain parameters for creating a Thumb
 class Thumb {
     constructor(id, title, artist, date, imgUrl, alt) {
         this.id = id;
