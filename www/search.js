@@ -46,8 +46,6 @@ async function search(searchInput) {
         var gallery = document.getElementById('gallery');
         var searchInfo = document.getElementById('search-info');
         gallery.innerHTML = ""; // clear old search
-        searchInfo.innerHTML = `Searching for "${searchInput}"`;
-
         let artworkIds;
 
         // load highlights (empty search)
@@ -58,6 +56,7 @@ async function search(searchInput) {
         // load search results
         else {
             console.log(`Searching by value: '${searchInput}'`);
+            searchInfo.innerHTML = `Searching for "${searchInput}"`;
             artworkIds = await getArtworkSearch(searchInput, true);
         }
 
@@ -65,7 +64,7 @@ async function search(searchInput) {
         
         // create divs from artworkIds
         if(artworkIds){
-            searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
+            if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
             artworkIds = artworkIds.slice(0,100); 
             for(let artworkId of artworkIds){
                 console.debug(artworkId);
@@ -88,7 +87,6 @@ async function search(searchInput) {
             }
         }
         else {
-
             searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
         }
 
