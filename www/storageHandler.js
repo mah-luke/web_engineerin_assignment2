@@ -5,7 +5,7 @@ function store(name, content) {
 function getObject(name) {
     tmp = localStorage.getItem(name);
 
-    if(tmp == null || tmp == '[]'){
+    if(tmp == null || tmp == '[]' || tmp == ""){
         return null;
     } 
     else {

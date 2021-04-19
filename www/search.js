@@ -17,7 +17,7 @@ watch out for plural (artwork vs artworks)
 */
 
 const form = document.querySelector('form.search-form');
-const cart = document.querySelector('[href="cart.html"]');
+// const cart = document.querySelector('[href="cart.html"]');
 const CURRENT_URL = new URL(window.location.href);
 
 // events
@@ -25,9 +25,9 @@ const CURRENT_URL = new URL(window.location.href);
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     search(CURRENT_URL.searchParams.get('q'));
-    const size = getSize('cart');
+    // const size = getSize('cart');
 
-    cart.innerHTML =  `Cart${size>0?` (${size})`:""}`;
+    // cart.innerHTML =  `Cart${size>0?` (${size})`:""}`;
 });
 
 form.addEventListener('submit', event => {
