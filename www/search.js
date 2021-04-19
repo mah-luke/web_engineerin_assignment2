@@ -20,26 +20,39 @@ watch out for plural (artwork vs artworks)
 
 let loading = false;
 const form = document.querySelector('form.search-form');
+const CURRENT_URL = new URL(window.location.href);
 
 // events
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
 
-    searchHandler();
+    console.error(CURRENT_URL);
+
+    searchProcesser();
 });
 
 form.addEventListener('submit', event => {
     console.log("--- Search triggered ---");
 
     event.preventDefault();
-    searchHandler(document.getElementById('search').value);
+    window.location.search = `?q=${document.getElementById('search').value}`;
+    // searchHandler(document.getElementById('search').value);
+});
+
+window.addEventListener('searchchange', event => {
+    console.error('search changed!!!');
 });
 
 // functions
 
-async function searchHandler(searchInput) {
+async function searchProcesser() {
     if(!loading){
+        searchInput = CURRENT_URL.searchParams.get('q');
+        // .substring(3); // strip from '?q='
+
+        console.error(JSON.stringify(searchInput));
+        
         loading = true;
         console.error(`setting loading to true for search ${searchInput}`);
         search(searchInput).then(() => {
@@ -139,7 +152,7 @@ function createThumbElement(thumb) {
 
 // API calls
 async function getArtworkObject(highlightId){
-    console.warn(highlightId);
+    console.debug(highlightId);
     const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${highlightId}`, {
         method: 'GET',
         // body: myBody,
