@@ -19,6 +19,7 @@ watch out for plural (artwork vs artworks)
 // import { getArtwork} from './met-api-wrapper.js';
 
 const form = document.querySelector('form.search-form');
+const cart = document.querySelector('[href="cart.html"]');
 const CURRENT_URL = new URL(window.location.href);
 
 // events
@@ -26,6 +27,7 @@ const CURRENT_URL = new URL(window.location.href);
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     search(CURRENT_URL.searchParams.get('q'));
+    cart.innerHTML = `Cart(${localStorage.getItem('cart')!= null? localStorage.getItem('cart') : "" })`;
 });
 
 form.addEventListener('submit', event => {
@@ -65,8 +67,6 @@ async function search(searchInput) {
         if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
         artworkIds = artworkIds.slice(0,100); // max cap
         for(let artworkId of artworkIds){
-            console.debug(artworkId);
-
             const artwork = getArtworkObject(artworkId)
             .then(artwork => {
                 gallery.appendChild(
@@ -100,7 +100,6 @@ async function getHighlights() {
         );
     return hlJson.highlights;
 };
-
 
 function createThumbElement(thumb) {
     console.log(`createThumbElement(${JSON.stringify(thumb)})`)
