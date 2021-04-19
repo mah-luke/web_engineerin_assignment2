@@ -27,7 +27,8 @@ const CURRENT_URL = new URL(window.location.href);
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     search(CURRENT_URL.searchParams.get('q'));
-    cart.innerHTML = `Cart (${localStorage.getItem('cart')!= null? localStorage.getItem('cart').split('{').length-1 : "" })`;
+    cartStrg = localStorage.getItem('cart');
+    cart.innerHTML = `Cart ${(cartStrg != null && cartStrg.length > 0) ? `(${cartStrg.split('{').length-1 })` : "" }`;
 });
 
 form.addEventListener('submit', event => {
