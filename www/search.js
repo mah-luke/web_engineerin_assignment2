@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartStorage = localStorage.getItem('cart');
     console.log(cartStorage);
 
-    if(cartStorage == null) cart.innerHTML = 'Cart';
+    if(cartStorage == null || cartStorage == "[]") cart.innerHTML = 'Cart';
     else cart.innerHTML = `Cart (${JSON.parse(cartStorage).length})`;
 });
 
