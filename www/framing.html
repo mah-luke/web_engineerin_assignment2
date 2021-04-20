@@ -141,6 +141,8 @@
 
     window.render = function () {
       // update print sizes
+      var previewImg = new Image();
+      previewImg.src = document.getElementById('preview-image').src
       const printSizes = Frame.getPrintSizes(previewImg);
       const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;
       const totalHeight = printSizes[printSize][1] + 2 * frameWidth + 2 * matWidth;

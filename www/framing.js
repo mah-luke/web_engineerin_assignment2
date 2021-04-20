@@ -1,5 +1,6 @@
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
+import * as Frame from './frame.js';
 
 const CURRENT_URL = new URL(window.location.href);
 const objectId = CURRENT_URL.searchParams.get('objectID');
@@ -34,6 +35,10 @@ async function framing() {
      <span class="date">${cachedPic.date}</span>
      </div>
      </a>`;
+    
+    var img = new Image(100, 100);
+    img.src = cachedPic.imgUrl;
+    Frame.getPrintSizes(img);
      
 
 }
