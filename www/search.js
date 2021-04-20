@@ -76,18 +76,7 @@ async function search(searchInput) {
 
             if(artwork){
                 console.warn("loading from cache");
-                gallery.appendChild(
-                    createThumbElement(
-                        new Artwork(
-                            artwork.objectID,
-                            artwork.title,
-                            artwork.artistDisplayName,
-                            artwork.objectDate,
-                            artwork.primaryImageSmall,
-                            `Picture: ${artwork.title}`
-                        )
-                    )
-                );
+                gallery.appendChild( createThumbElement( artwork));
             }
             else {
                 console.warn("loading from api");
