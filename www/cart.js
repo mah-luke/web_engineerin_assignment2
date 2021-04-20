@@ -17,6 +17,7 @@ import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import * as StorageHandler from './storageHandler.js';
 import {Artwork} from './artwork.js';
+import {CartItem} from './cartItem.js';
 
 const cartSection = document.getElementById('cart');
 
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     main();
 });
 
-function main() {
+async function main() {
     var cartStorage = StorageHandler.getObject('cart');
 
     console.log(cartStorage);
@@ -36,5 +37,87 @@ function main() {
     }
     else {
 
+        let btn = cartSection.lastElementChild;
+        let checkout = cartSection.lastElementChild.previousElementSibling;
+
+        cartSection.innerHTML = "";
+
+        for(let cart of cartStorage){
+            console.log(cart);
+            let artwork;
+            //let artwork = ArtworkCache.retrieve(cart.objectID);
+            if(!artwork) {
+                let tmp = await MetApi.getArtworkObject(cart.objectID);
+
+                console.info(tmp);
+
+                if(tmp) {
+                    artwork = new Artwork(
+                        tmp.objectID,
+                        tmp.title,
+                        tmp.artistDisplayName,
+                        tmp.objectDate,
+                        tmp.primaryImageSmall,
+                        `Picture: ${tmp.title}`
+                    );
+                }
+            }
+            console.error(artwork);
+
+            if(artwork){
+                cartSection.appendChild(
+                    createCartItem(
+                        new CartItem(
+                            artwork,
+                            cart.printSize,
+                            cart.frameStyle,
+                            cart.frameWidth,
+                            cart.matColor,
+                            cart.matWidth
+                        )
+                    )
+                );
+            }
+        }
+
+
+        checkout.innerHTML = `Total: € 0`
+        cartSection.appendChild(checkout);
+        cartSection.appendChild(btn);
+
     }
+
+
+}
+
+function createCartItem(cart) {
+    console.log(`createCartItem(${JSON.stringify(cart)})`)
+    console.log(cart.artwork)
+    
+    const div = document.createElement('div');
+    div.classList.add("cart-item");
+    
+    div.innerHTML = 
+    `<div class="cart-preview">
+      <a href="framing.html?objectID=${cart.artwork.objectID}" alt="anchor for framing">
+        <img class="cart-thumb" src="${cart.img}" alt="${cart.alt}" onload="">
+      </a>
+    </div>
+    <div class="museum-label">
+      <div>
+        <span class="artist">${cart.artwork.artist}</span>
+        <span class="title">${cart.artwork.title}</span>,
+        <span class="date">${cart.artwork.date}</span>
+        <br><br>
+        <span class="frame-description"></span>
+      </div>
+      <div class="price">€ ${cart.artist}</div>
+      <button type="button" class="cart-remove" aria-label="Remove"></button>
+    </div>`;
+    
+    return div;
+}
+
+function createCartTotal() {
+
 }
