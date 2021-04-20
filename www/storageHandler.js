@@ -1,9 +1,9 @@
-function store(name, content) {
+export function store(name, content) {
     localStorage.setItem(name, JSON.stringify(content));
 }
 
-function getObject(name) {
-    tmp = localStorage.getItem(name);
+export function getObject(name) {
+    let tmp = localStorage.getItem(name);
 
     if(tmp == null || tmp == '[]' || tmp == ""){
         return null;
@@ -13,7 +13,7 @@ function getObject(name) {
     }
 }
 
-function getSize(name) {
-    tmp = getObject(name)
+export function getSize(name) {
+    let tmp = getObject(name)
     return tmp != null? tmp.length : 0;
 }
