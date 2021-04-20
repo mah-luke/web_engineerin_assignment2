@@ -100,7 +100,7 @@ function createCartItem(cart) {
     div.innerHTML = 
     `<div class="cart-preview">
       <a href="framing.html?objectID=${cart.artwork.objectID}" alt="anchor for framing">
-        <img class="cart-thumb" src="${cart.img}" alt="${cart.alt}" onload="">
+        <img class="cart-thumb" src="${cart.artwork.imgUrl}" alt="${cart.alt}" onload="">
       </a>
     </div>
     <div class="museum-label">
