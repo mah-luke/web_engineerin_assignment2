@@ -17,17 +17,9 @@ import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import {Artwork} from './artwork.js';
 
-const form = document.getElementById('framing-form');
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     main();
-});
-
-form.addEventListener('submit', event => {
-    console.log('form submitted');
-    event.preventDefault();
-
 });
 
 function main() {

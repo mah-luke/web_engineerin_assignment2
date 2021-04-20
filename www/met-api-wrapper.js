@@ -12,6 +12,7 @@ export function getArtworkObject(id){
             'Content-Type': 'application/json'
         }
     })
+    .catch( response  => response = null)
     .then( response => response = response.json());
 }
 
