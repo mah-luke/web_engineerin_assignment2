@@ -16,6 +16,10 @@ when the search is done: 'Found <number> artworks for "<term>"'
 watch out for plural (artwork vs artworks)
 */
 
+import * as ArtworkCache from  './artwork-cache.js';
+import * as MetApi from './met-api-wrapper.js';
+import {Artwork} from './artwork.js';
+
 const form = document.querySelector('form.search-form');
 // const cart = document.querySelector('[href="cart.html"]');
 const CURRENT_URL = new URL(window.location.href);
@@ -28,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // const size = getSize('cart');
 
     // cart.innerHTML =  `Cart${size>0?` (${size})`:""}`;
+    
 });
 
 form.addEventListener('submit', event => {
@@ -57,7 +62,7 @@ async function search(searchInput) {
     else {
         console.log(`Searching by value: '${searchInput}'`);
         searchInfo.innerHTML = `Searching for "${searchInput}"`;
-        artworkIds = await getArtworkSearch(searchInput, true);
+        artworkIds = await MetApi.getArtworkSearch(searchInput, true);
     }
 
     console.debug(artworkIds);
@@ -67,11 +72,13 @@ async function search(searchInput) {
         if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
         artworkIds = artworkIds.slice(0,100); // max cap
         for(let artworkId of artworkIds){
-            const artwork = getArtworkObject(artworkId)
-            .then(artwork => {
+            var artwork = ArtworkCache.retrieve(artworkId);
+
+            if(artwork){
+                console.warn("loading from cache");
                 gallery.appendChild(
                     createThumbElement(
-                        new Thumb(
+                        new Artwork(
                             artwork.objectID,
                             artwork.title,
                             artwork.artistDisplayName,
@@ -80,8 +87,24 @@ async function search(searchInput) {
                             `Picture: ${artwork.title}`
                         )
                     )
-                )
-            });
+                );
+            }
+            else {
+                console.warn("loading from api");
+                MetApi.getArtworkObject(artworkId)
+                .then( response => {
+                    let tmpArtwork = new Artwork(
+                        response.objectID,
+                        response.title,
+                        response.artistDisplayName,
+                        response.objectDate,
+                        response.primaryImageSmall,
+                        `Picture: ${response.title}`
+                    );
+                    gallery.appendChild(createThumbElement(tmpArtwork));
+                    ArtworkCache.store(tmpArtwork);
+                });
+            }
         }
     }
     else {
@@ -91,13 +114,14 @@ async function search(searchInput) {
 
 async function getHighlights() {
     console.log(`loadHighlights()`);
+    let hlJson;
 
     await fetch("./highlights.json") // fetch highlights data
         .then(response => response.json())
         .then(json => {
             console.debug(json);
-            hlJson = json}
-        );
+            hlJson = json;
+        });
     return hlJson.highlights;
 };
 
@@ -118,15 +142,4 @@ function createThumbElement(thumb) {
     </a>`;
     
     return div;
-}
-
-class Thumb {
-    constructor(id, title, artist, date, imgUrl, alt) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.date = date;
-        this.imgUrl = imgUrl;
-        this.alt = alt;
-    }
 }
