@@ -18,6 +18,8 @@ import * as MetApi from './met-api-wrapper.js';
 import * as StorageHandler from './storageHandler.js';
 import {Artwork} from './artwork.js';
 
+const cartSection = document.getElementById('cart');
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     main();
@@ -29,8 +31,10 @@ function main() {
     console.log(cartStorage);
     if(!cartStorage) {
         console.warn("Storage for cart empty!");
+
+        cartSection.innerHTML = `There are no items in your shopping cart.`;
     }
+    else {
 
-    
-
+    }
 }
