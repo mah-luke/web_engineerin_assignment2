@@ -14,7 +14,7 @@ async function framing() {
     console.log("prova")
     if (ArtworkCache.retrieve(objectId) == null){
         console.log("ArtworkCache failed")
-        var response = await MetApi.getArtworkObject(objectId);
+        var response = MetApi.getArtworkObject(objectId);
         if (response == null) {
             console.log("image")
             window.location.href = "www/search.html"
