@@ -15,6 +15,7 @@
 
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
+import * as StorageHandler from './storageHandler.js';
 import {Artwork} from './artwork.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,6 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function main() {
+    var cartStorage = StorageHandler.getObject('cart');
 
+    console.log(cartStorage);
+    if(!cartStorage) {
+        console.warn("Storage for cart empty!");
+    }
+
+    
 
 }
