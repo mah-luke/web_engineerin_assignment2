@@ -60,6 +60,7 @@ async function main() {
                         tmp.primaryImageSmall,
                         `Picture: ${tmp.title}`
                     );
+                    ArtworkCache.store(artwork);
                 }
             }
             console.error(artwork);
