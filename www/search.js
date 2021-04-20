@@ -28,10 +28,6 @@ const CURRENT_URL = new URL(window.location.href);
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     search(CURRENT_URL.searchParams.get('q'));
-    // const size = getSize('cart');
-
-    // cart.innerHTML =  `Cart${size>0?` (${size})`:""}`;
-    
 });
 
 form.addEventListener('submit', event => {
@@ -95,9 +91,7 @@ async function search(searchInput) {
             }
         }
     }
-    else {
-        searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
-    }
+    else searchInfo.innerHTML = `Found no artwork for ${searchInput}`;
 }
 
 async function getHighlights() {

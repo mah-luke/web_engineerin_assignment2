@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="./templateManager.js" type="module" defer></script>
+  <script src="./cart.js" type="module" defer></script>
   <title>Cart | Artmart</title>
 </head>
 
@@ -23,7 +25,7 @@
     <section id="cart" class="cart">
 
       <!-- TODO: dynamically add cart items using the template below -->
-      <div class="cart-item">
+      <!-- <div class="cart-item">
         <div class="cart-preview">
           <a href="framing.html" alt="anchor for framing">
             <img class="cart-thumb" src="test.com" alt="" onload="">
@@ -40,7 +42,7 @@
           <div class="price">€ 0</div>
           <button type="button" class="cart-remove" aria-label="Remove"></button>
         </div>
-      </div>
+      </div> -->
 
       <div id="cart-total" class="cart-total">Total: € 0</div>
       <button type="button" id="cart-checkout" class="cart-checkout" onclick="window.location.href='checkout.html';">Checkout</button>
