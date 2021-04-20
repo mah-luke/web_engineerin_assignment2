@@ -44,8 +44,8 @@ async function main() {
 
         for(let cart of cartStorage){
             console.log(cart);
-            let artwork;
-            //let artwork = ArtworkCache.retrieve(cart.objectID);
+            //let artwork;
+            let artwork = ArtworkCache.retrieve(cart.objectID);
             if(!artwork) {
                 let tmp = await MetApi.getArtworkObject(cart.objectID);
 
