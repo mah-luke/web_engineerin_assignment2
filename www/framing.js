@@ -18,7 +18,7 @@ async function framing() {
         console.log(response);
         if (response == null || response.message == "ObjectID not found") {
             console.log("image")
-            window.location.href = "www/search.html"
+            window.location.replace("search.html");
         }
     }
 
