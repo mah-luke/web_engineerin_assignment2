@@ -21,7 +21,6 @@ import * as MetApi from './met-api-wrapper.js';
 import {Artwork} from './artwork.js';
 
 const form = document.querySelector('form.search-form');
-// const cart = document.querySelector('[href="cart.html"]');
 const CURRENT_URL = new URL(window.location.href);
 
 // events
