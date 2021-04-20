@@ -12,16 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function framing() {
     console.log("prova")
-    if (ArtworkCache.retrieve(objectId) == null){
-        console.log("ArtworkCache failed")
-        var response = await MetApi.getArtworkObject(objectId);
-        console.log(response);
-        if (response == null || response.message == "ObjectID not found") {
-            console.log("image")
+    var cachedPic = ArtworkCache.retrieve(objectId);
+    if (!cachedPic){
+        console.log("ArtworkCache search failed")
+        cachedPic = await MetApi.getArtworkObject(objectId);
+        ArtworkCache.store(cachedPic);
+        console.log(cachedPic);
+        if (cachedPic == null || cachedPic.message == "ObjectID not found") {
+            console.log("image not found")
             window.location.replace("search.html");
         }
     }
+    console.log(cachedPic.imgUrlBig)
+    document.getElementById('preview-image').src = cachedPic.imgUrl;
+    document.getElementById('preview-image').alt = cachedPic.alt;
+    const div = document.getElementById('image-label');
 
-
+    div.innerHTML = 
+    `<span class="artist">${cachedPic.artist}</span>
+     <span class="title">${cachedPic.title}</span>,
+     <span class="date">${cachedPic.date}</span>
+     </div>
+     </a>`;
+     
 
 }

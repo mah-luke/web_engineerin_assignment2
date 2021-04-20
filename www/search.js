@@ -83,7 +83,8 @@ async function search(searchInput) {
                         response.artistDisplayName,
                         response.objectDate,
                         response.primaryImageSmall,
-                        `Picture: ${response.title}`
+                        `Picture: ${response.title}`,
+                        response.primaryImage
                     );
                     gallery.appendChild(createThumbElement(tmpArtwork));
                     ArtworkCache.store(tmpArtwork);
