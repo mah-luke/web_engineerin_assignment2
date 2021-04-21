@@ -40,6 +40,7 @@ async function main() {
 
         let btn = cartSection.lastElementChild;
         let checkout = cartSection.lastElementChild.previousElementSibling;
+        let priceAll = 0;
 
         cartSection.innerHTML = "";
 
@@ -79,11 +80,13 @@ async function main() {
                         )
                     )
                 );
+                priceAll += Frame.calculatePrice(cart.printSize, cart.frameStyle, cart.frameWidth, cart.matWidth);
             }
+            
         }
 
 
-        checkout.innerHTML = `Total: € 0`
+        checkout.innerHTML = `Total: € ${priceAll}`;
         cartSection.appendChild(checkout);
         cartSection.appendChild(btn);
 
@@ -121,7 +124,7 @@ function createCartItem(cart) {
         <span class="title">${cart.artwork.title}</span>,
         <span class="date">${cart.artwork.date}</span>
         <br><br>
-        <span class="frame-description">${sizeDescr} print in a ${cart.frameWidth / 10} cm classic frame with a ${cart.matWidth / 10} cm ${cart.matColor} mat.</span>
+        <span class="frame-description">${sizeDescr} print in a ${cart.frameWidth / 10} cm ${cart.frameStyle} frame with a ${cart.matWidth / 10} cm ${cart.matColor} mat.</span>
       </div>
       <div class="price">€ ${Frame.calculatePrice(cart.printSize, cart.frameStyle, cart.frameWidth, cart.matWidth)}</div>
       <button type="button" class="cart-remove" aria-label="Remove"></button>
