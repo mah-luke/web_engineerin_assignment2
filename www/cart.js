@@ -31,7 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     main();
 
+    // add listeners for new buttons
+    cartRemBtns = document.querySelectorAll('.cart-remove');
+    console.log(cartRemBtns);
 
+    cartRemBtns.forEach(btn => {
+        console.warn(btn);
+        btn.addEventListener('click', event => {
+            console.log(event);
+            event.preventDefault();
+
+            let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
+            console.log(urlPic);
+            let objectID = urlPic.searchParams.get('objectID');
+            let cur = StorageHandler.getObject('cart');
+            console.log(cur);
+            cur = cur.filter(cart => cart.objectID != objectID); /// get this objectid
+            console.log(cur);
+            
+            StorageHandler.store('cart', cur);
+            window.location.reload();
+        })
+    });
     
 
 });
@@ -97,30 +118,7 @@ async function main() {
         cartSection.appendChild(checkout);
         cartSection.appendChild(btn);
 
-        // add listeners for new buttons
-        cartRemBtns = document.querySelectorAll('.cart-remove');
-        console.log(cartRemBtns);
 
-        cartRemBtns.forEach(btn => {
-            console.warn(btn);
-            btn.addEventListener('click', event => {
-                console.log(event);
-                event.preventDefault();
-
-                let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
-                console.log(urlPic);
-                let objectID = urlPic.searchParams.get('objectID');
-                let cur = StorageHandler.getObject('cart');
-                console.log(cur);
-                cur = cur.filter(cart => cart.objectID != objectID); /// get this objectid
-                console.log(cur);
-                
-                StorageHandler.store('cart', cur);
-
-                main();
-
-            })
-        });
     }
 }
 
