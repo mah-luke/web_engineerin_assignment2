@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(cur);
             
             StorageHandler.store('cart', cur);
-            window.location.reload();
+            window.location.reload(true);
         })
     });
     
