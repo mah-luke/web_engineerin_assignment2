@@ -1,10 +1,10 @@
 import * as StorageHandler from './storageHandler.js';
 
-const cart = document.querySelector('[href="cart.html"]');
+const cartHeader = document.querySelector('[href="cart.html"]');
 
 // events
 
 document.addEventListener('DOMContentLoaded', () => {    
     const size = StorageHandler.getSize('cart');
-    cart.innerHTML = `Cart${ size > 0 ? ` (${size})` : "" }`;
+    cartHeader.innerHTML = `Cart${ size > 0 ? ` (${size})` : "" }`;
 });

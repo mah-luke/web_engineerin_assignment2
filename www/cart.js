@@ -20,6 +20,7 @@ import * as Frame from './frame.js';
 import {Artwork} from './artwork.js';
 import {CartItem} from './cartItem.js';
 const cartSection = document.getElementById('cart');
+const cartHeader = document.querySelector('[href="cart.html"]');
 console.log(cartSection);
 var cartRemBtns;
 
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cartRemBtns.forEach(btn => {
         console.warn(btn);
         btn.addEventListener('click', event => {
-            console.log(event);
+            console.warn(event);
             event.preventDefault();
 
             let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
@@ -50,7 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(cur);
             
             StorageHandler.store('cart', cur);
-            window.location.reload(true);
+            main();
+            console.log(cartHeader);
+            cartHeader.innerHTML = `Cart${ cur.length > 0 ? ` (${cur.length})` : "" }`;
         })
     });
     
