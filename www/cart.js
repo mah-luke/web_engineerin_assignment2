@@ -27,38 +27,13 @@ var cartRemBtns;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
-    
-    
     main();
 
     // add listeners for new buttons
     cartRemBtns = document.querySelectorAll('.cart-remove');
     console.log(cartRemBtns);
 
-    cartRemBtns.forEach(btn => {
-        console.warn(btn);
-        btn.addEventListener('click', event => {
-            console.warn(event);
-            event.preventDefault();
 
-            //TODO: removing wron child (up / down)
-            // deleting of 2+ elements
-
-            let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
-            console.log(urlPic);
-            let objectID = urlPic.searchParams.get('objectID');
-            let cur = StorageHandler.getObject('cart');
-            console.log(cur);
-            cur = cur.filter(cart => cart.objectID != objectID); /// get this objectid
-            console.log(cur);
-            
-            StorageHandler.store('cart', cur);
-            window.location.reload();
-            let cartHeader = document.querySelector('[href="cart.html"]');
-            console.log(cartHeader);
-            cartHeader.innerHTML = `Cart${ cur.length > 0 ? ` (${cur.length})` : "" }`;
-        })
-    });
     
 
 });
@@ -124,7 +99,33 @@ async function main() {
         cartSection.appendChild(checkout);
         cartSection.appendChild(btn);
 
+        cartRemBtns = document.querySelectorAll('.cart-remove');
 
+        cartRemBtns.forEach(btn => {
+            console.warn(btn);
+            btn.addEventListener('click', event => {
+                console.warn(event);
+                event.preventDefault();
+    
+                //TODO: removing wron child (up / down)
+                // deleting of 2+ elements
+    
+                let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
+                console.log(urlPic);
+                let objectID = urlPic.searchParams.get('objectID');
+                let cur = StorageHandler.getObject('cart');
+                console.log(cur);
+                cur = cur.filter(cart => cart.objectID != objectID); /// get this objectid
+                console.log(cur);
+                
+                StorageHandler.store('cart', cur);
+                // window.location.reload();
+                let cartHeader = document.querySelector('[href="cart.html"]');
+                console.log(cartHeader);
+                cartHeader.innerHTML = `Cart${ cur.length > 0 ? ` (${cur.length})` : "" }`;
+                main();
+            })
+        });
     }
 }
 
