@@ -42,12 +42,21 @@ async function gotoPage(steps, url, params = {}) {
   let p = ps.join('&');
   let c = qs.length == 0 ? '' : url.lastIndexOf('?') == -1 ? '?' : '&';
   steps.push(`navigate to <code>${url + c + p}</code>`);
-  await page.goto(url + c + q, { waitUntil: 'networkidle0' });
+  await page.goto(url + c + q, { waitUntil: 'networkidle0', timeout: 2000 });
 }
 
 async function reloadPage(steps) {
   steps.push('reload the page');
-  await page.reload({ waitUntil: 'networkidle0' });
+  await page.reload({ waitUntil: 'networkidle0', timeout: 2000 });
+}
+
+async function expectClick(selector, text) {
+  try {
+    await expect(page).toClick(selector, { text });
+  } catch (e) {
+    const textStr = text ? ` (with text matching "${text}")` : '';
+    throw Error('Element not found: ' + selector + textStr);
+  }
 }
 
 async function clickElement(steps, selector, { selectorStr = null, withText = null, textStr = null, waitForNavigation = false } = {}) {
@@ -57,11 +66,11 @@ async function clickElement(steps, selector, { selectorStr = null, withText = nu
   steps.push(`click <code>${selectorStr}</code>${textStr}${waitStr}`);
   if (waitForNavigation) {
     await Promise.all([
-      expect(page).toClick(selector, { text: withText }),
-      page.waitForNavigation({ waitUntil: 'networkidle0' })
+      expectClick(selector, withText),
+      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 2000 })
     ]);
   } else {
-    await expect(page).toClick(selector, { text: withText })
+    await expectClick(selector, withText)
   }
 }
 
@@ -86,7 +95,22 @@ async function expectElementProperty(steps, selector, property, value, { selecto
   steps.push(`expect <code>${propertyStr}</code> of <code>${selectorStr}</code> to be <code>${valueStr}</code>`);
   const elem = await expect(page).toMatchElement(selector);
   const actualValue = await page.evaluate((el, prop) => el[prop], elem, property);
-  expect(actualValue).toEqual(value.toString());
+  try {
+    expect(actualValue).toEqual(value.toString());
+  } catch (e) {
+    throw Error(
+      `Expected ${property}: "${value.toString()}"\n\n` +
+      `Actual ${property}: "${actualValue}"`
+    );
+  }
+}
+
+async function expectText(expectedText) {
+  try {
+    await expect(page).toMatch(expectedText);
+  } catch (e) {
+    throw Error(`Text not found: "${expectedText}"`);
+  }
 }
 
 function stringify(x,f) {
@@ -106,5 +130,6 @@ module.exports = {
   clickElement,
   fillElement,
   selectOption,
-  expectElementProperty
+  expectElementProperty,
+  expectText
 }

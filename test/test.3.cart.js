@@ -1,4 +1,4 @@
-import { test_, gotoPage, expectElementProperty } from './jest-tuwien';
+import { test_, gotoPage, expectElementProperty, expectText, clickElement } from './jest-tuwien';
 import { testValidHtml } from './jest-tuwien/validate';
 import { ordinal, rows, xrand, stringifyRand } from './jest-tuwien/pretty';
 import { startInterceptingRequests, expectMetObjectsOnPage, expectMetObjectCache, expectCartItemCount, setCart } from './util';
@@ -8,8 +8,9 @@ import { calculatePrice } from '../www/frame.js';
 const PAGE_URL = 'http://localhost:4444/cart.html';
 
 async function testRemoveItem(steps, cart, objects, n) {
-  steps.push(`click <code>#cart &gt; div:nth-child(${xrand(n)}) .cart-remove</code>`)
-  await expect(page).toClick(`#cart > div:nth-child(${n}) .cart-remove`)
+  const selector = `#cart > div:nth-child(${n}) .cart-remove`;
+  const selectorStr = `#cart &gt; div:nth-child(${xrand(n)}) .cart-remove`;
+  await clickElement(steps, selector, { selectorStr });
 
   const removedItem = cart[cart.length - n];
   const removedObject = objects.filter(x => x.objectID == removedItem.objectID)[0];
@@ -60,7 +61,7 @@ describe('Cart', () => {
     await gotoPage(steps, PAGE_URL);
 
     steps.push(`expect page to contain correct text for empty state`);
-    await expect(page).toMatch('There are no items in your shopping cart.');
+    await expectText('There are no items in your shopping cart.');
 
     steps.push(`expect <code>#cart-checkout</code> to be hidden`);
     await page.waitForSelector('#cart-checkout', { hidden: true, timeout: 1000 });
@@ -90,7 +91,7 @@ describe('Cart', () => {
         `expect page to contain the textual frame description for the ${ordinal(i + 1)} item in the shopping cart`,
         `<pre>${stringifyRand(item)}</pre>`
       );
-      await expect(page).toMatch(cartDescription(item))
+      await expectText(cartDescription(item))
     }
   });
 
@@ -107,7 +108,7 @@ describe('Cart', () => {
         `<pre>${stringifyRand(cart[i])}</pre>`
       );
       const price = calculatePrice(item.printSize, item.frameStyle, item.frameWidth, item.matWidth);
-      await expect(page).toMatch('€ ' + (price / 100).toFixed(2));
+      await expectText('€ ' + (price / 100).toFixed(2));
     }
   });
 
@@ -168,7 +169,7 @@ describe('Cart', () => {
     for (const item of cart) {
       expectedTotal += calculatePrice(item.printSize, item.frameStyle, item.frameWidth, item.matWidth);
     }
-    await expect(page).toMatch('Total: € ' + (expectedTotal / 100).toFixed(2));
+    await expectText('Total: € ' + (expectedTotal / 100).toFixed(2));
   });
 
   test_(308, 'Remove one item via button', async (steps, chance) => {
