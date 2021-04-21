@@ -64,7 +64,7 @@ async function search(searchInput) {
     
     // create divs from artworkIds
     if(artworkIds){
-        if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for "${searchInput}"`;
+        if(searchInput) searchInfo.innerHTML = `Found ${artworkIds.length} artwork${artworkIds.length > 1? "s": ""} for “${searchInput}”`;
         artworkIds = artworkIds.slice(0,100); // max cap
         for(let artworkId of artworkIds){
             var artwork = ArtworkCache.retrieve(artworkId);
