@@ -86,7 +86,7 @@ async function main() {
         }
 
 
-        checkout.innerHTML = `Total: € ${priceAll/100}`;
+        checkout.innerHTML = `Total: € ${Number(priceAll/100).toFixed(2)}`;
         cartSection.appendChild(checkout);
         cartSection.appendChild(btn);
 
@@ -125,9 +125,9 @@ function createCartItem(cart) {
         <span class="title">${cart.artwork.title}</span>,
         <span class="date">${cart.artwork.date}</span>
         <br><br>
-        <span class="frame-description">${sizeDescr} print in a ${cart.frameWidth / 10} cm ${cart.frameStyle} frame with a ${cart.matWidth / 10} cm ${cart.matColor} mat.</span>
+        <span class="frame-description">${sizeDescr} print in a ${Number(cart.frameWidth / 10).toFixed(2)} cm ${cart.frameStyle} frame with a ${cart.matWidth / 10} cm ${cart.matColor} mat.</span>
       </div>
-      <div class="price">€ ${Frame.calculatePrice(cart.printSize, cart.frameStyle, cart.frameWidth, cart.matWidth)/100}</div>
+      <div class="price">€ ${Number(Frame.calculatePrice(cart.printSize, cart.frameStyle, cart.frameWidth, cart.matWidth)/100).toFixed(2)}</div>
       <button type="button" class="cart-remove" aria-label="Remove"></button>
     </div>`;
     
