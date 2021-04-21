@@ -92,7 +92,7 @@ async function search(searchInput) {
             }
         }
     }
-    else searchInfo.innerHTML = `Found 0 artwork for ${searchInput}`;
+    else searchInfo.innerHTML = `Found 0 artworks for ${searchInput}`;
 }
 
 async function getHighlights() {
