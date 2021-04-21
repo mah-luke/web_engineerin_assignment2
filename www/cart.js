@@ -20,7 +20,6 @@ import * as Frame from './frame.js';
 import {Artwork} from './artwork.js';
 import {CartItem} from './cartItem.js';
 const cartSection = document.getElementById('cart');
-const cartHeader = document.querySelector('[href="cart.html"]');
 console.log(cartSection);
 var cartRemBtns;
 
@@ -42,6 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn(event);
             event.preventDefault();
 
+            //TODO: removing wron child (up / down)
+            // deleting of 2+ elements
+
             let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
             console.log(urlPic);
             let objectID = urlPic.searchParams.get('objectID');
@@ -51,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(cur);
             
             StorageHandler.store('cart', cur);
-            main();
+            window.location.reload();
+            let cartHeader = document.querySelector('[href="cart.html"]');
             console.log(cartHeader);
             cartHeader.innerHTML = `Cart${ cur.length > 0 ? ` (${cur.length})` : "" }`;
         })
