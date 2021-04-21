@@ -111,11 +111,12 @@ function createCartItem(cart) {
 
     const div = document.createElement('div');
     div.classList.add("cart-item");
+    console.info(cart.artwork);
     
     div.innerHTML = 
     `<div class="cart-preview">
-      <a href="framing.html?objectID=${cart.artwork.objectID}" alt="anchor for framing">
-        <img class="cart-thumb" src="${cart.artwork.imgUrl}" alt="${cart.alt}" onload="">
+      <a href="framing.html?objectID=${cart.artwork.id}&printSize=${cart.printSize}&frameStyle=${cart.frameStyle}&frameWidth=${cart.frameWidth}&matColor=${cart.matColor}&matWidth=${cart.matWidth}" alt="anchor for framing">
+        <img class="cart-thumb" src="${cart.artwork.imgUrl}" alt="${cart.artwork.alt}" onload="">
       </a>
     </div>
     <div class="museum-label">
