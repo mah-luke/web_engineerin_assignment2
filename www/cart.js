@@ -16,6 +16,7 @@
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import * as StorageHandler from './storageHandler.js';
+import * as Frame from './frame.js';
 import {Artwork} from './artwork.js';
 import {CartItem} from './cartItem.js';
 
@@ -94,7 +95,17 @@ async function main() {
 function createCartItem(cart) {
     console.log(`createCartItem(${JSON.stringify(cart)})`)
     console.log(cart.artwork)
-    
+
+    let sizeDescr;
+    switch(cart.printSize) {
+        case "S": sizeDescr = "Small"; break;
+        case "M": sizeDescr = "Medium"; break;
+        case "L": sizeDescr = "Large"; break;
+
+    }
+
+
+
     const div = document.createElement('div');
     div.classList.add("cart-item");
     
@@ -110,9 +121,9 @@ function createCartItem(cart) {
         <span class="title">${cart.artwork.title}</span>,
         <span class="date">${cart.artwork.date}</span>
         <br><br>
-        <span class="frame-description"></span>
+        <span class="frame-description">${sizeDescr} print in a ${cart.frameWidth / 10} cm classic frame with a ${cart.matWidth / 10} cm ${cart.matColor} mat.</span>
       </div>
-      <div class="price">€ ${cart.artist}</div>
+      <div class="price">€ ${Frame.calculatePrice(cart.printSize, cart.frameStyle, cart.frameWidth, cart.matWidth)}</div>
       <button type="button" class="cart-remove" aria-label="Remove"></button>
     </div>`;
     
