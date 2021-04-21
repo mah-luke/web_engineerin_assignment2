@@ -19,13 +19,23 @@ import * as StorageHandler from './storageHandler.js';
 import * as Frame from './frame.js';
 import {Artwork} from './artwork.js';
 import {CartItem} from './cartItem.js';
-
 const cartSection = document.getElementById('cart');
+console.log(cartSection);
+var cartRemBtns;
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
+    
+    
     main();
+
+
+    
+
 });
+
 
 async function main() {
     var cartStorage = StorageHandler.getObject('cart');
@@ -51,8 +61,6 @@ async function main() {
             if(!artwork) {
                 let tmp = await MetApi.getArtworkObject(cart.objectID);
 
-                console.info(tmp);
-
                 if(tmp) {
                     artwork = new Artwork(
                         tmp.objectID,
@@ -65,7 +73,6 @@ async function main() {
                     ArtworkCache.store(artwork);
                 }
             }
-            console.error(artwork);
 
             if(artwork){
                 cartSection.appendChild(
@@ -90,14 +97,35 @@ async function main() {
         cartSection.appendChild(checkout);
         cartSection.appendChild(btn);
 
+        // add listeners for new buttons
+        cartRemBtns = document.querySelectorAll('.cart-remove');
+        console.log(cartRemBtns);
+
+        cartRemBtns.forEach(btn => {
+            console.warn(btn);
+            btn.addEventListener('click', event => {
+                console.log(event);
+                event.preventDefault();
+
+                let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
+                console.log(urlPic);
+                let objectID = urlPic.searchParams.get('objectID');
+                let cur = StorageHandler.getObject('cart');
+                console.log(cur);
+                cur = cur.filter(cart => cart.objectID != objectID); /// get this objectid
+                console.log(cur);
+                
+                StorageHandler.store('cart', cur);
+
+            })
+        })
     }
 
 
 }
 
 function createCartItem(cart) {
-    console.log(`createCartItem(${JSON.stringify(cart)})`)
-    console.log(cart.artwork)
+   // console.log(`createCartItem(${JSON.stringify(cart)})`)
 
     let sizeDescr;
     switch(cart.printSize) {
@@ -111,7 +139,7 @@ function createCartItem(cart) {
 
     const div = document.createElement('div');
     div.classList.add("cart-item");
-    console.info(cart.artwork);
+    //console.info(cart.artwork);
     
     div.innerHTML = 
     `<div class="cart-preview">
