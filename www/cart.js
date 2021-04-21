@@ -117,11 +117,11 @@ async function main() {
                 
                 StorageHandler.store('cart', cur);
 
+                main();
+
             })
-        })
+        });
     }
-
-
 }
 
 function createCartItem(cart) {
@@ -135,12 +135,8 @@ function createCartItem(cart) {
 
     }
 
-
-
     const div = document.createElement('div');
-    div.classList.add("cart-item");
-    //console.info(cart.artwork);
-    
+    div.classList.add("cart-item");    
     div.innerHTML = 
     `<div class="cart-preview">
       <a href="framing.html?objectID=${cart.artwork.id}&printSize=${cart.printSize}&frameStyle=${cart.frameStyle}&frameWidth=${cart.frameWidth}&matColor=${cart.matColor}&matWidth=${cart.matWidth}" alt="anchor for framing">
@@ -160,8 +156,4 @@ function createCartItem(cart) {
     </div>`;
     
     return div;
-}
-
-function createCartTotal() {
-
 }
