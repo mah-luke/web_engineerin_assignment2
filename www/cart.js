@@ -17,10 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // add listeners for new buttons
     cartRemBtns = document.querySelectorAll('.cart-remove');
     console.log(cartRemBtns);
-
-
-    
-
 });
 
 
