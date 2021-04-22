@@ -37,9 +37,9 @@ async function main() {
 
         cartSection.innerHTML = "";
 
-        for(let cart of cartStorage){
-            console.log(cart);
-            //let artwork;
+        for(let i = cartStorage.length - 1; i >= 0; i--){
+            console.log(cartStorage[i]);
+            cart = cartStorage[i];
             let artwork = ArtworkCache.retrieve(cart.objectID);
             if(!artwork) {
                 let tmp = await MetApi.getArtworkObject(cart.objectID);
@@ -83,15 +83,16 @@ async function main() {
         cartRemBtns = document.querySelectorAll('.cart-remove');
 
         cartRemBtns.forEach(btn => {
-            console.warn(btn);
             btn.addEventListener('click', event => {
-                console.warn(event);
-                event.preventDefault();
-    
                 let urlPic = new URL(event.target.parentElement.previousElementSibling.firstElementChild.href);
-                console.log(urlPic);
                 let objectID = urlPic.searchParams.get('objectID');
                 let cur = StorageHandler.getObject('cart');
+                
+                event.preventDefault();
+                console.warn(`triggered Deleting. ObjectID: ${urlPic.searchParams.get('objectID')}`);
+                console.log(urlPic);
+
+                // filter element that gets deleted out of Storage
                 console.log(cur);
                 cur = cur.filter(cart => cart.objectID != objectID);
                 console.log(cur);
