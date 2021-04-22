@@ -13,10 +13,6 @@ var cartRemBtns;
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
     main();
-
-    // add listeners for new buttons
-    cartRemBtns = document.querySelectorAll('.cart-remove');
-    console.log(cartRemBtns);
 });
 
 
@@ -35,23 +31,31 @@ async function main() {
         let checkout = cartSection.lastElementChild.previousElementSibling;
         let priceAll = 0;
 
+        // reset cartSection
         cartSection.innerHTML = "";
 
+        console.log(cartStorage.length);
+        // rebuild cartSection
         for(let i = cartStorage.length - 1; i >= 0; i--){
             console.log(cartStorage[i]);
-            cart = cartStorage[i];
-            let artwork = ArtworkCache.retrieve(cart.objectID);
-            if(!artwork) {
-                let tmp = await MetApi.getArtworkObject(cart.objectID);
 
-                if(tmp) {
+            let cart = cartStorage[i];
+            let artwork = ArtworkCache.retrieve(cart.objectID);
+
+            // has cache already saved?
+            if(!artwork) {
+                let rawApiObj = await MetApi.getArtworkObject(cart.objectID);
+
+                // does this object exist?
+                if(rawApiObj) {
+                    console.warn("savin over API");
                     artwork = new Artwork(
-                        tmp.objectID,
-                        tmp.title,
-                        tmp.artistDisplayName,
-                        tmp.objectDate,
-                        tmp.primaryImageSmall,
-                        `Picture: ${tmp.title}`
+                        rawApiObj.objectID,
+                        rawApiObj.title,
+                        rawApiObj.artistDisplayName,
+                        rawApiObj.objectDate,
+                        rawApiObj.primaryImageSmall,
+                        `Picture: ${rawApiObj.title}`
                     );
                     ArtworkCache.store(artwork);
                 }
@@ -74,7 +78,6 @@ async function main() {
             }
             
         }
-
 
         checkout.innerHTML = `Total: € ${Number(priceAll/100).toFixed(2)}`;
         cartSection.appendChild(checkout);
