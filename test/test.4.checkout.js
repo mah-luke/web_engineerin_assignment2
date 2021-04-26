@@ -1,4 +1,4 @@
-import { test_, gotoPage, selectOption } from './jest-tuwien';
+import { test_, gotoPage, selectOption, expectText } from './jest-tuwien';
 import { xrand } from './jest-tuwien/pretty';
 import { testValidHtml } from './jest-tuwien/validate';
 import { startInterceptingRequests, setCart } from './util';
@@ -43,7 +43,7 @@ describe('Checkout', () => {
     for (const item of cart) {
       expectedSubtotal += calculatePrice(item.printSize, item.frameStyle, item.frameWidth, item.matWidth);
     }
-    await expect(page).toMatch('Subtotal: € ' + (expectedSubtotal/100).toFixed(2));
+    await expectText('Subtotal: € ' + (expectedSubtotal/100).toFixed(2));
   });
 
   test_(404, 'Calculate shipping costs', async (steps, chance) => {
@@ -55,7 +55,7 @@ describe('Checkout', () => {
     const dest = chance.pickone(DESTINATIONS);
     await selectOption(steps, 'select[name="country"]', dest[0], { optionStr: xrand })
     steps.push('expect to find the correct shipping costs on the page');
-    await expect(page).toMatch('Shipping Costs: € ' + (dest[1]/100).toFixed(2));
+    await expectText('Shipping Costs: € ' + (dest[1]/100).toFixed(2));
   });
 
   test_(405, 'Calculate total', async (steps, chance) => {
@@ -74,7 +74,7 @@ describe('Checkout', () => {
 
     steps.push(`expect to find the correct total on the page`);
     let expectedTotal = subtotal + dest[1];
-    await expect(page).toMatch('Total: € ' + (expectedTotal/100).toFixed(2));
+    await expectText('Total: € ' + (expectedTotal/100).toFixed(2));
   });
 
 });

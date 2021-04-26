@@ -12,7 +12,8 @@ export function getArtworkObject(id){
             'Content-Type': 'application/json'
         }
     })
-    .then( response => response = response.json());
+    .then( response => response = response.json())
+    .then(response => {return response.message == null? response : null});
 }
 
 /**

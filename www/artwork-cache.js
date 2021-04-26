@@ -1,7 +1,6 @@
 export function retrieve(artworkId) {
     if(artworkId in localStorage) {
         let ret = JSON.parse(localStorage[artworkId]);
-        //console.log(ret);
         return ret;
     }
 }

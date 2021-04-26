@@ -17,12 +17,12 @@ async function framing() {
     if (!cachedPic){
         console.log("ArtworkCache search failed")
         cachedPic = await MetApi.getArtworkObject(objectId);
-        ArtworkCache.store(cachedPic);
         console.log(cachedPic);
-        if (cachedPic == null || cachedPic.message == "ObjectID not found") {
+        if (!cachedPic) {
             console.log("image not found")
             window.location.replace("search.html");
         }
+        ArtworkCache.store(cachedPic);
     }
     console.log(cachedPic.imgUrlBig)
     document.getElementById('preview-image').src = cachedPic.imgUrl;

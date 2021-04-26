@@ -1,4 +1,4 @@
-import { reloadPage, expectElementProperty } from './jest-tuwien';
+import { reloadPage, expectElementProperty, expectText } from './jest-tuwien';
 import { cardinal, pluralise, rows, xrand, stringifyRand } from './jest-tuwien/pretty';
 import fs from 'fs';
 import path from 'path';
@@ -93,8 +93,8 @@ async function expectMetObjectsOnPage(steps, expectedObjects) {
       `expect page to contain artwork and description for object <code>${xrand(obj.objectID)}</code>`,
       `<pre>${stringifyRand(obj)}</pre>`
     );
-    await expect(page).toMatch(obj.artistDisplayName);
-    await expect(page).toMatch(`${obj.title}, ${obj.objectDate}`);
+    await expectText(obj.artistDisplayName);
+    await expectText(`${obj.title}, ${obj.objectDate}`);
     try {
       expect(imgs).toContainEqual(obj.primaryImageSmall);
     } catch (e) {
@@ -154,7 +154,7 @@ async function expectCartItemCount(steps, cart, gotoFn) {
 async function setCart(steps, cart) {
   steps.push(
     `put ${xrand(cardinal(cart.length))} ${pluralise('item', cart.length)} in the cart`,
-    `<pre>localStorage.setItem('cart', ${stringifyRand(cart)})</pre>`
+    `<pre>localStorage.setItem('cart', JSON.stringify(${stringifyRand(cart)}))</pre>`
   );
   await page.evaluateOnNewDocument(cart => {
     localStorage.setItem('cart', JSON.stringify(cart));

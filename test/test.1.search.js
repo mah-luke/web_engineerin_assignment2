@@ -1,4 +1,4 @@
-import { test_, gotoPage, clickElement, fillElement } from './jest-tuwien';
+import { test_, gotoPage, clickElement, fillElement, expectText } from './jest-tuwien';
 import { testValidHtml } from './jest-tuwien/validate';
 import { cardinal, xrand } from './jest-tuwien/pretty';
 import { startInterceptingRequests, onMetSearchRequest, expectMetObjectsOnPage, expectMetObjectCache, expectCartItemCount } from './util';
@@ -48,7 +48,7 @@ describe('Search', () => {
     await startInterceptingRequests(steps);
     await gotoPage(steps, PAGE_URL);
     steps.push(`expect page to contain the correct text if no search term was given`);
-    await expect(page).toMatch('Search our collection of more than 400,000 artworks.');
+    await expectText('Search our collection of more than 400,000 artworks.');
   });
 
   test_(106, 'Show correct text when search done', async (steps, chance) => {
@@ -67,15 +67,15 @@ describe('Search', () => {
 
     await gotoPage(steps, PAGE_URL, { q: query1 });
     steps.push(`expect page to contain the correct text for ${xrand(cardinal(results1.length))} results`)
-    await expect(page).toMatch(`Found ${results1.length} artworks for “${query1}”`);
+    await expectText(`Found ${results1.length} artworks for “${query1}”`);
 
     await gotoPage(steps, PAGE_URL, { q: query2 });
     steps.push(`expect page to contain the correct text for one result`)
-    await expect(page).toMatch(`Found 1 artwork for “${query2}”`);
+    await expectText(`Found 1 artwork for “${query2}”`);
 
     await gotoPage(steps, PAGE_URL, { q: query3 });
     steps.push(`expect page to contain the correct text for zero results`)
-    await expect(page).toMatch(`Found 0 artworks for “${query3}”`);
+    await expectText(`Found 0 artworks for “${query3}”`);
   });
 
   test_(107, 'Consider only artworks with images', async (steps, chance) => {

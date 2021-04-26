@@ -1,4 +1,4 @@
-import { test_, gotoPage, clickElement, fillElement, expectElementProperty } from './jest-tuwien';
+import { test_, gotoPage, clickElement, fillElement, expectElementProperty, expectText } from './jest-tuwien';
 import { testValidHtml } from './jest-tuwien/validate';
 import { capitalise, xrand } from './jest-tuwien/pretty';
 import { startInterceptingRequests, expectMetObjectsOnPage, expectMetObjectCache, expectCartItemCount } from './util';
@@ -74,7 +74,7 @@ describe('Framing', () => {
     await gotoPage(steps, PAGE_URL, { objectID: object.objectID, printSize, frameWidth, frameStyle, matWidth, matColor });    
     steps.push(`expect to find correct price on page`);
     const expectedPrice = calculatePrice(printSize, frameStyle, frameWidth, matWidth);
-    await expect(page).toMatch('€ ' + (expectedPrice/100).toFixed(2));
+    await expectText('€ ' + (expectedPrice/100).toFixed(2));
   });
 
   test_(207, 'Update price when controls change', async (steps, chance) => {
@@ -96,7 +96,7 @@ describe('Framing', () => {
 
     steps.push(`expect to find correct price on page`);
     const expectedPrice = calculatePrice(printSize, frameStyle, frameWidth, matWidth);
-    await expect(page).toMatch('€ ' + (expectedPrice/100).toFixed(2));
+    await expectText('€ ' + (expectedPrice/100).toFixed(2));
   });
 
   test_(208, 'Cache Met objects', async (steps, chance) => {
