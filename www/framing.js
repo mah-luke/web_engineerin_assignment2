@@ -36,9 +36,6 @@ async function framing() {
      </div>
      </a>`;
     
-    var img = new Image(100, 100);
-    img.src = cachedPic.imgUrl;
-    Frame.getPrintSizes(img);
      
 
 }
