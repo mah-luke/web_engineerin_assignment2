@@ -43,26 +43,29 @@ export async function framing() {
 export function rendering(artwork) {
     let params = CURRENT_URL.searchParams;
     console.log(params);
+    let previewContainer = document.getElementById("preview-container");
 
     let cartItem = new CartItem(
         artwork,
         params.get("printSize")? params.get("printSize") :  'M',
-        // TODO: other params
+        params.get("frameStyle")? params.get("frameStyle") : 'natural',
+        params.get("frameWidth")? params.get("frameWidth"): 40,
+        params.get("matColor")? params.get("matColor") : 'ivory',
+        params.get("matWidth")? params.get("matWidth"): 55
     );
 
     
     // retrieve url params
-    previewImg = document.getElementById("preview-image");
     const printSizes = Frame.getPrintSizes(previewImg);
-    const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;
-    const totalHeight = printSizes[printSize][1] + 2 * frameWidth + 2 * matWidth;
+    const totalWidth = printSizes[cartItem.printSize][0] + 2 * cartItem.frameWidth + 2 * cartItem.matWidth;
+    const totalHeight = printSizes[cartItem.printSize][1] + 2 * cartItem.frameWidth + 2 * cartItem.matWidth;
     document.getElementById("print-size-s-label").innerHTML = `Small <br>${printSizes['S'][0] / 10} × ${printSizes['S'][1] / 10} cm`
     document.getElementById("print-size-m-label").innerHTML = `Medium<br>${printSizes['M'][0] / 10} × ${printSizes['M'][1] / 10} cm`
     document.getElementById("print-size-l-label").innerHTML = `Large <br>${printSizes['L'][0] / 10} × ${printSizes['L'][1] / 10} cm`
     document.getElementById('total-size').innerHTML = `${totalWidth / 10} × ${totalHeight / 10} cm`;
 
     // TODO: render picture frame
-    Frame.render(previewImg, previewContainer, printSize, frameStyle, frameWidth, matColor, matWidth);
+    Frame.render(previewImg, previewContainer, cartItem.printSize, cartItem.frameStyle, cartItem.frameWidth, cartItem.matColor, cartItem.matWidth);
     
     // TODO: update price
 
