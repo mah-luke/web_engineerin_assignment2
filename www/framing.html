@@ -159,8 +159,6 @@
       document.getElementById('total-size').innerHTML = `${totalWidth / 10} × ${totalHeight / 10} cm`;
 
       // TODO: render picture frame
-      Framing.update(frameStyle, printSize, matWidth, matColor, frameWidth);
-      previewContainer = document.getElementById("preview-container");
       Frame.render(previewImg, previewContainer, printSize, frameStyle, frameWidth, matColor, matWidth);
       
       // TODO: update price
