@@ -137,41 +137,33 @@
   </main>
 
   <script type="module">
-    import * as Frame from './frame.js';
-    import * as Framing from './framing.js'
+    // import * as Frame from './frame.js';
+    import * as Framing from './framing.js';
 
     window.render = function () {
       // update print sizes
-      let previewContainer = document.getElementById("preview-container");
-      let previewImg = new Image();
-      let printSize = 'M';
-      let matWidth = 55;
-      let frameWidth = 40;
-      let frameStyle = 'natural';
-      let matColor = 'ivory';
 
-      previewImg = document.getElementById("preview-image");
-      const printSizes = Frame.getPrintSizes(previewImg);
-      const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;
-      const totalHeight = printSizes[printSize][1] + 2 * frameWidth + 2 * matWidth;
-      document.getElementById("print-size-s-label").innerHTML = `Small <br>${printSizes['S'][0] / 10} × ${printSizes['S'][1] / 10} cm`
-      document.getElementById("print-size-m-label").innerHTML = `Medium<br>${printSizes['M'][0] / 10} × ${printSizes['M'][1] / 10} cm`
-      document.getElementById("print-size-l-label").innerHTML = `Large <br>${printSizes['L'][0] / 10} × ${printSizes['L'][1] / 10} cm`
-      document.getElementById('total-size').innerHTML = `${totalWidth / 10} × ${totalHeight / 10} cm`;
-
-      // TODO: render picture frame
-      Frame.render(previewImg, previewContainer, printSize, frameStyle, frameWidth, matColor, matWidth);
       
-      // TODO: update price
+      Framing.framing();
+      
+      // let previewContainer = document.getElementById("preview-container");
+      // let previewImg = new Image();
+      // let printSize = 'M';
+      // let matWidth = 55;
+      // let frameWidth = 40;
+      // let frameStyle = 'natural';
+      // let matColor = 'ivory';
+
+
     }
 
     window.addEventListener("DOMContentLoaded", render); 
     window.addEventListener("resize", render);
     window.addEventListener("change", render);
 
-    function clamp(x, min, max) {
-      return Math.min(Math.max(x, min), max);
-    }
+    // function clamp(x, min, max) {
+    //   return Math.min(Math.max(x, min), max);
+    // }
   </script>
 </body>
 

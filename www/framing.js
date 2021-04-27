@@ -1,18 +1,18 @@
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import * as Frame from './frame.js';
+import {CartItem} from './cartItem.js';
 
 const CURRENT_URL = new URL(window.location.href);
 const objectId = CURRENT_URL.searchParams.get('objectID');
 const previewImg = document.getElementById('preview-image');
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("--- load site ---");
-    framing();
+// document.addEventListener('DOMContentLoaded', () => {
+//     console.log("--- load site ---");
+//     framing();
     
-});
-
-async function framing() {
+// });
+export async function framing() {
     console.log("prova");
     var artwork = ArtworkCache.retrieve(objectId);
     if (!artwork){
@@ -35,7 +35,37 @@ async function framing() {
     div.innerHTML = 
     `<span class="artist">${artwork.artist}</span>
      <span class="title">${artwork.title}</span>,
-     <span class="date">${artwork.date}</span>`;     
+     <span class="date">${artwork.date}</span>`;
+     
+    rendering(artwork);
+}
+
+export function rendering(artwork) {
+    let params = CURRENT_URL.searchParams;
+    console.log(params);
+
+    let cartItem = new CartItem(
+        artwork,
+        params.get("printSize")? params.get("printSize") :  'M',
+        // TODO: other params
+    );
+
+    
+    // retrieve url params
+    previewImg = document.getElementById("preview-image");
+    const printSizes = Frame.getPrintSizes(previewImg);
+    const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;
+    const totalHeight = printSizes[printSize][1] + 2 * frameWidth + 2 * matWidth;
+    document.getElementById("print-size-s-label").innerHTML = `Small <br>${printSizes['S'][0] / 10} × ${printSizes['S'][1] / 10} cm`
+    document.getElementById("print-size-m-label").innerHTML = `Medium<br>${printSizes['M'][0] / 10} × ${printSizes['M'][1] / 10} cm`
+    document.getElementById("print-size-l-label").innerHTML = `Large <br>${printSizes['L'][0] / 10} × ${printSizes['L'][1] / 10} cm`
+    document.getElementById('total-size').innerHTML = `${totalWidth / 10} × ${totalHeight / 10} cm`;
+
+    // TODO: render picture frame
+    Frame.render(previewImg, previewContainer, printSize, frameStyle, frameWidth, matColor, matWidth);
+    
+    // TODO: update price
+
 }
 
 export function update(matColor, frameStyle, printSize, frameWidth, matWidth) {
