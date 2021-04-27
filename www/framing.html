@@ -25,7 +25,7 @@
   <main class="framing-main">
 
     <div id="preview-container" class="framing-preview">
-      <img id="preview-image" src="null" alt="">
+      <img  id="preview-image" src="null" alt="">
       <div id="image-label" class="museum-label"></div>
     </div>
 
@@ -149,6 +149,7 @@
       let frameWidth = 40;
       let frameStyle = 'natural';
       let matColor = 'ivory';
+
       previewImg = document.getElementById("preview-image");
       const printSizes = Frame.getPrintSizes(previewImg);
       const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;

@@ -4,6 +4,7 @@ import * as Frame from './frame.js';
 
 const CURRENT_URL = new URL(window.location.href);
 const objectId = CURRENT_URL.searchParams.get('objectID');
+const previewImg = document.getElementById('preview-image');
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--- load site ---");
@@ -12,30 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function framing() {
-    console.log("prova")
-    var cachedPic = ArtworkCache.retrieve(objectId);
-    if (!cachedPic){
-        console.log("ArtworkCache search failed")
-        cachedPic = await MetApi.getArtworkObject(objectId);
-        console.log(cachedPic);
-        if (!cachedPic) {
-            console.log("image not found")
+    console.log("prova");
+    var artwork = ArtworkCache.retrieve(objectId);
+    if (!artwork){
+        console.log("Artwork not cached!");
+        artwork = await MetApi.getArtworkObject(objectId);
+        console.log(artwork);
+
+        if (!artwork) {
+            console.warn("image not found");
             window.location.replace("search.html");
         }
-        ArtworkCache.store(cachedPic);
+        
+        ArtworkCache.store(artwork);
     }
-    console.log(cachedPic.imgUrlBig)
-    document.getElementById('preview-image').src = cachedPic.imgUrl;
-    document.getElementById('preview-image').alt = cachedPic.alt;
+
+    previewImg.src = artwork.imgUrl;
+    previewImg.alt = artwork.alt;
     const div = document.getElementById('image-label');
 
     div.innerHTML = 
-    `<span class="artist">${cachedPic.artist}</span>
-     <span class="title">${cachedPic.title}</span>,
-     <span class="date">${cachedPic.date}</span>
-     </div>
-     </a>`;     
-
+    `<span class="artist">${artwork.artist}</span>
+     <span class="title">${artwork.title}</span>,
+     <span class="date">${artwork.date}</span>`;     
 }
 
 export function update(matColor, frameStyle, printSize, frameWidth, matWidth) {
