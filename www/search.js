@@ -1,21 +1,3 @@
-/*
-TODO: use query parameter q to store search term /done
-
-TODO: Use MET API to search /done
-
-TODO: load highlights if no searchterm was given (highlights.json) /done?
-
-TODO: Consider only artworks that have images /done
-
-TODO: Return only the first 100 per search /done
-
-TODO: Link the artwork image of each result to the corresponding Framing page /done?
-
-TODO: Replace 'search our collection of...' with actual search term 'Searching for "<term>"'
-when the search is done: 'Found <number> artworks for "<term>"'
-watch out for plural (artwork vs artworks)
-*/
-
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import {Artwork} from './artwork.js';
