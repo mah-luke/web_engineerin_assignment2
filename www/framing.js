@@ -34,8 +34,6 @@ async function framing() {
      <span class="title">${cachedPic.title}</span>,
      <span class="date">${cachedPic.date}</span>
      </div>
-     </a>`;
-    
-     
+     </a>`;     
 
 }

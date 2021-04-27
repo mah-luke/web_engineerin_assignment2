@@ -138,11 +138,18 @@
 
   <script type="module">
     import * as Frame from './frame.js';
+    import * as Framing from './framing.js'
 
     window.render = function () {
       // update print sizes
-      var previewImg = new Image();
-      previewImg.src = document.getElementById('preview-image').src
+      let previewContainer = null;
+      let previewImg = new Image();
+      let printSize = 'M';
+      let matWidth = 55;
+      let frameWidth = 40;
+      let frameStyle = 'natural';
+      let matColor = 'ivory';
+      previewImg = document.getElementById("preview-image");
       const printSizes = Frame.getPrintSizes(previewImg);
       const totalWidth = printSizes[printSize][0] + 2 * frameWidth + 2 * matWidth;
       const totalHeight = printSizes[printSize][1] + 2 * frameWidth + 2 * matWidth;
@@ -152,10 +159,16 @@
       document.getElementById('total-size').innerHTML = `${totalWidth / 10} × ${totalHeight / 10} cm`;
 
       // TODO: render picture frame
+      Framing.update(frameStyle, printSize, matWidth, matColor, frameWidth);
+      previewContainer = document.getElementById("preview-container");
+      Frame.render(previewImg, previewContainer, printSize, frameStyle, frameWidth, matColor, matWidth);
+      
       // TODO: update price
     }
 
+    window.addEventListener("DOMContentLoaded", render); 
     window.addEventListener("resize", render);
+    window.addEventListener("change", render);
 
     function clamp(x, min, max) {
       return Math.min(Math.max(x, min), max);
