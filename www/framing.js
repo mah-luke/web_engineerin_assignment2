@@ -7,13 +7,9 @@ const CURRENT_URL = new URL(window.location.href);
 const objectId = CURRENT_URL.searchParams.get('objectID');
 const previewImg = document.getElementById('preview-image');
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     console.log("--- load site ---");
-//     framing();
-    
-// });
-export async function framing() {
-    console.log("prova");
+var cartItem = null;
+
+export async function init() {
     var artwork = ArtworkCache.retrieve(objectId);
     if (!artwork){
         console.log("Artwork not cached!");
@@ -36,16 +32,10 @@ export async function framing() {
     `<span class="artist">${artwork.artist}</span>
      <span class="title">${artwork.title}</span>,
      <span class="date">${artwork.date}</span>`;
-     
-    rendering(artwork);
-}
 
-export function rendering(artwork) {
+
     let params = CURRENT_URL.searchParams;
-    console.log(params);
-    let previewContainer = document.getElementById("preview-container");
-
-    let cartItem = new CartItem(
+    cartItem = new CartItem(
         artwork,
         params.get("printSize")? params.get("printSize") :  'M',
         params.get("frameStyle")? params.get("frameStyle") : 'natural',
@@ -53,9 +43,13 @@ export function rendering(artwork) {
         params.get("matColor")? params.get("matColor") : 'ivory',
         params.get("matWidth")? params.get("matWidth"): 55
     );
+}
 
-    
-    // retrieve url params
+export function render() {
+
+    let previewContainer = document.getElementById("preview-container");
+    console.log(params);
+
     const printSizes = Frame.getPrintSizes(previewImg);
     const totalWidth = printSizes[cartItem.printSize][0] + 2 * cartItem.frameWidth + 2 * cartItem.matWidth;
     const totalHeight = printSizes[cartItem.printSize][1] + 2 * cartItem.frameWidth + 2 * cartItem.matWidth;
@@ -71,7 +65,7 @@ export function rendering(artwork) {
 
 }
 
-export function update(matColor, frameStyle, printSize, frameWidth, matWidth) {
+function update(matColor, frameStyle, printSize, frameWidth, matWidth) {
     setMatColor(matColor);
     setFrameStyle(frameStyle);
     setPrintSize(printSize);
@@ -91,7 +85,6 @@ function setMatColor(matColor) {
             break;
 
         }
-
     }
 
 }

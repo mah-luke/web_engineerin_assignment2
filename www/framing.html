@@ -141,12 +141,16 @@
     import * as Framing from './framing.js';
 
     window.render = function () {
-     Framing.framing();
+     Framing.render();
     }
 
-    window.addEventListener("DOMContentLoaded", render); 
-    window.addEventListener("resize", render);
-    window.addEventListener("change", render);
+    window.init = function () {
+      Framing.init();
+    }
+
+    window.addEventListener("DOMContentLoaded", init); 
+    // window.addEventListener("resize", render);
+    // window.addEventListener("change", render);
 
     // function clamp(x, min, max) {
     //   return Math.min(Math.max(x, min), max);
