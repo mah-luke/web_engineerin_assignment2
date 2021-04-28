@@ -23,7 +23,7 @@ export async function init() {
         console.warn("Artwork not cached!");
         let artworkTmp = await MetApi.getArtworkObject(objectId);
 
-        if (!artwork) {
+        if (!artworkTmp) {
             console.warn("image not found! Redirecting to search...");
             window.location.replace("search.html");
         }
