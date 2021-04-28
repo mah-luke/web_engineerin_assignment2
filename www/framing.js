@@ -64,6 +64,7 @@ export async function init() {
 
     console.log(cartItem);
 
+    updateDom();
     render();
 }
 
