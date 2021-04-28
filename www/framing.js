@@ -9,6 +9,13 @@ const previewContainer = document.getElementById("preview-container");
 const previewImg = document.getElementById('preview-image');
 var cartItem = null;
 
+document.getElementById("toCartBtn").addEventListener("click", event => {
+    console.log("submit to cart");
+
+    event.preventDefault;
+    
+})
+
 export async function init() {
     console.log(`init of framing`);
 

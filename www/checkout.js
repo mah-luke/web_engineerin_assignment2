@@ -27,7 +27,7 @@ function checkout() {
             
         }
         const subtotal = document.getElementById("price-subtotal");
-        subtotal.innerHTML = `Total: € ${Number(subtotalPrice/100).toFixed(2)}`;
+        subtotal.innerHTML = `Subtotal: € ${Number(subtotalPrice/100).toFixed(2)}`;
     }
 }
 
@@ -36,7 +36,7 @@ document.addEventListener("change", () =>{
     shippingCosts = Number($('#country').find(":selected").attr("data-cost"));
 
     const shipping = document.getElementById("price-shipping");
-    shipping.innerHTML = `Total: € ${Number(shippingCosts/100).toFixed(2)}`;
+    shipping.innerHTML = `Shipping Costs: € ${Number(shippingCosts/100).toFixed(2)}`;
 
     totalPrice = Number(subtotalPrice + shippingCosts);
     const total = document.getElementById("price-total");
