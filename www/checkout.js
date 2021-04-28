@@ -31,6 +31,8 @@ function checkout() {
     }
 }
 
+document.querySelector('');
+
 document.addEventListener("change", () =>{
     const select = document.getElementById("country");
     shippingCosts = Number($('#country').find(":selected").attr("data-cost"));

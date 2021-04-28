@@ -2,6 +2,7 @@ import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 import * as Frame from './frame.js';
 import {CartItem} from './cartItem.js';
+import {Artwork} from './artwork.js';
 
 const CURRENT_URL = new URL(window.location.href);
 const objectId = CURRENT_URL.searchParams.get('objectID');
@@ -11,9 +12,7 @@ var cartItem = null;
 
 document.getElementById("toCartBtn").addEventListener("click", event => {
     console.log("submit to cart");
-
     event.preventDefault;
-    
 })
 
 export async function init() {
@@ -21,8 +20,18 @@ export async function init() {
 
     var artwork = ArtworkCache.retrieve(objectId);
     if (!artwork){
-        console.log("Artwork not cached!");
-        artwork = await MetApi.getArtworkObject(objectId);
+        console.warn("Artwork not cached!");
+        let artworkTmp = await MetApi.getArtworkObject(objectId);
+
+        artwork = new Artwork(
+            artworkTmp.objectID,
+            artworkTmp.title,
+            artworkTmp.artistDisplayName,
+            artworkTmp.objectDate,
+            artworkTmp.primaryImageSmall,
+            `Picture: ${artworkTmp.title}`,
+            artworkTmp.primaryImage
+        )
 
         if (!artwork) {
             console.warn("image not found! Redirecting to search...");
@@ -53,6 +62,8 @@ export async function init() {
     );
 
     console.log(cartItem);
+
+    render();
 }
 
 // TODO: implement render method
@@ -77,7 +88,6 @@ export function render() {
 
     // load update into DOM
     updateDom();
-
 }
 
 function updateCartItem() {
@@ -108,59 +118,4 @@ function updateDom() {
     document.getElementById("frameSlider").value = cartItem.frameWidth/10;
     document.getElementById("matWidth").value = cartItem.matWidth/10;
     document.getElementById("matSlider").value = cartItem.matWidth/10;
-
-
-
-    // setMatColor(cartItem.matColor);
-    // setFrameStyle(cartItem.frameStyle);
-    // setPrintSize(cartItem.printSize);
 }
-
-// function setMatColor(matColor) {
-
-//     const containers = document.querySelectorAll('.mat-color-item');
-//     console.log(containers);
-//     for (let index = 0; index < containers.length; index++) {
-//         if (containers[index].firstElementChild.value === matColor) {
-//             containers[index].firstElementChild.checked = true;
-//             break;
-
-//         }
-//     }
-
-// }
-
-// function setFrameStyle(frameStyle) {
-
-//     const containers = document.querySelectorAll('.frame-style-item');
-//     console.log(containers);
-//     for (let index = 0; index < containers.length; index++) {
-
-//         if (containers[index].firstElementChild.value === frameStyle) {
-//             containers[index].firstElementChild.checked = true;
-//             break;
-
-//         }
-
-//     }
-
-
-// }
-
-// function setPrintSize(printSize) {
-
-//     const small = document.getElementById("print-size-s")
-//     const medium = document.getElementById("print-size-m")
-//     const large = document.getElementById("print-size-l")
-
-//     if (small.value == printSize) {
-//         small.checked = true;
-
-//     } else if (medium.value == printSize) {
-//         medium.checked = true;
-
-//     } else {
-//         large.checked = true;
-//     }
-
-// }
