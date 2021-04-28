@@ -4,9 +4,9 @@ import {Artwork} from './artwork.js';
 import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 
-const subtotalPrice = 0;
-const shippingCosts = 0;
-const totalPrice = 0;
+var subtotalPrice = 0;
+var shippingCosts = 0;
+var totalPrice = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("--load checkout--");
