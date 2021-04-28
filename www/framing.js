@@ -28,7 +28,6 @@ export async function init() {
             window.location.replace("search.html");
         }
         
-
         artwork = new Artwork(
             artworkTmp.objectID,
             artworkTmp.title,
@@ -68,7 +67,6 @@ export async function init() {
     render();
 }
 
-// TODO: implement render method
 export function render() {
     console.log("render of framing");
 
