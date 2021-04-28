@@ -5,7 +5,7 @@ import * as ArtworkCache from  './artwork-cache.js';
 import * as MetApi from './met-api-wrapper.js';
 
 var subtotalPrice = 0;
-var shippingCosts = 0;
+var shippingCosts = 1500;
 var totalPrice = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,18 +27,27 @@ function checkout() {
             
         }
         const subtotal = document.getElementById("price-subtotal");
-        subtotal.innerHTML = `Subtotal: € ${Number(subtotalPrice/100).toFixed(2)}`;
+        subtotal.innerHTML = `${Number(subtotalPrice/100).toFixed(2)}`;
+
+        const shipping = document.getElementById("price-shipping");
+        shipping.innerHTML = `${Number(shippingCosts/100).toFixed(2)}`;
+
+        totalPrice = Number(subtotalPrice + shippingCosts);
+        const total = document.getElementById("price-total");
+        total.innerHTML = `${Number(totalPrice/100).toFixed(2)}`;
     }
 }
 
-document.addEventListener("change", () =>{
-    const select = document.getElementById("country");
-    shippingCosts = Number($('#country').find(":selected").attr("data-cost"));
+document.getElementById("country").addEventListener("change", () =>{
+    var select = document.getElementById("country");
+    console.log(select.options);
+    shippingCosts = Number(select.options[select.selectedIndex].dataset.cost);
+    console.log(shippingCosts);
 
     const shipping = document.getElementById("price-shipping");
-    shipping.innerHTML = `Shipping Costs: € ${Number(shippingCosts/100).toFixed(2)}`;
+    shipping.innerHTML = `${Number(shippingCosts/100).toFixed(2)}`;
 
     totalPrice = Number(subtotalPrice + shippingCosts);
     const total = document.getElementById("price-total");
-    total.innerHTML = `Total: € ${Number(totalPrice/100).toFixed(2)}`;
+    total.innerHTML = `${Number(totalPrice/100).toFixed(2)}`;
 });
